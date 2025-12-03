@@ -50,7 +50,7 @@ Sistem Layanan Magang adalah aplikasi berbasis konsol (CLI) yang dibangun menggu
 3.  **Cara Manual (Alternatif):**
     Jika ingin compile sendiri:
     ```bash
-    g++ main.cpp lamaran.cpp lowongan.cpp mahasiswa.cpp login.cpp -o app.exe -lcomdlg32
+    g++ src/*.cpp -Iinclude -o app.exe -lcomdlg32
     ./app.exe
     ```
 

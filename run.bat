@@ -1,6 +1,6 @@
 @echo off
 echo Compiling...
-g++ main.cpp login.cpp lamaran.cpp mahasiswa.cpp lowongan.cpp -o app.exe -lcomdlg32
+g++ src/*.cpp -Iinclude -o app.exe -lcomdlg32
 if %errorlevel% neq 0 (
     echo Compilation Failed!
     pause
