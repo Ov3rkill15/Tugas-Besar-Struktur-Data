@@ -299,18 +299,24 @@ void MainAdmin(string adminUsername, bool &logout) {
         string pilihan;
         getline(cin, pilihan);
 
-        if (pilihan == "1") KelolaPengguna(adminUsername);
-        else if (pilihan == "2") CetakPengguna();
-        else if (pilihan == "3") LihatRiwayatAdmin();
-        else if (pilihan == "4") ResetPasswordPengguna(adminUsername);
-        else if (pilihan == "5") GantiPasswordAdmin(adminUsername);
-        else if (pilihan == "6") {
-            cout << "Logout dari mode admin." << endl;
-            logout = true;
-            running = false;
-            Loading(1000);
-        } else if (pilihan == "0") {
-            exit(0);
+        if (pilihan.length() == 1) {
+            switch (pilihan[0]) {
+                case '1': KelolaPengguna(adminUsername); break;
+                case '2': CetakPengguna(); break;
+                case '3': LihatRiwayatAdmin(); break;
+                case '4': ResetPasswordPengguna(adminUsername); break;
+                case '5': GantiPasswordAdmin(adminUsername); break;
+                case '6': 
+                    cout << "Logout dari mode admin." << endl;
+                    logout = true;
+                    running = false;
+                    Loading(1000);
+                    break;
+                case '0': exit(0); break;
+                default: 
+                    cout << "Pilihan tidak valid." << endl;
+                    Loading(1000);
+            }
         } else {
             cout << "Pilihan tidak valid." << endl;
             Loading(1000);

@@ -103,12 +103,6 @@ void insertRelasi(ListParent &L_Parent, ListChild &L_Child, int ID_Lowongan, str
         cout << " Error: Lowongan ID " << ID_Lowongan << " tidak ditemukan. Lamaran dibatalkan." << endl;
     }
 }
-
-// Tambahkan di lamaran.cpp
-
-// Catatan: Asumsikan Anda dapat mengakses ListChild L_Child jika diperlukan
-// Namun, karena Node Relasi (R) sudah menyimpan ptr_child, kita bisa traversing Parent saja.
-
 void showStatusLamaranMahasiswa(ListParent L_Parent, string NIM_Target) {
     address_parent P = L_Parent.first;
     bool found_lamaran = false;
@@ -185,11 +179,6 @@ void showRekapLamaranPerusahaan(ListParent L_Parent) {
     }
 }
 
-// Catatan: Pastikan juga Anda menghapus atau mengganti semua stubs (placeholder)
-// yang tersisa di lamaran.cpp dengan implementasi aslinya.
-// Tambahkan atau pastikan fungsi-fungsi ini sudah ada di lamaran.cpp
-
-// Implementasi fungsi Edit Dosen (untuk verifikasi)
 void editStatusDosen(ListParent &L_Parent, int ID_Lamaran_Target, int Status_Baru) {
     address_parent P_Parent = L_Parent.first;
     address_relasi R_Target = nullptr;
@@ -317,10 +306,6 @@ void showLowonganDanPelamar(ListParent L_Parent) {
         P = P->next;
     }
 }
-// Stubs (placeholder) untuk fungsi edit dan show lainnya
-
-
-// --- FITUR BARU: REKAP DOSEN & NOTIFIKASI MAHASISWA ---
 
 void showRekapLamaranDosen(ListParent L_Parent) {
     address_parent P = L_Parent.first;
