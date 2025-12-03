@@ -12,6 +12,7 @@ const int MAX_RIWAYAT = 100;
 struct User {
     std::string username;
     std::string password;
+    std::string role;
 };
 
 struct RiwayatAdmin {
@@ -28,7 +29,7 @@ extern int jumlahRiwayat;
 
 // Function Prototypes
 void initUsers();
-bool Login(std::string &activeUser);
+bool Login(std::string &activeUser, std::string &activeRole);
 bool AuthenticateUser(std::string username, std::string password);
 bool isUsernameExists(std::string username);
 

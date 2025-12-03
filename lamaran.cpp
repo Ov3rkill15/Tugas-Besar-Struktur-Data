@@ -9,8 +9,33 @@ using namespace std;
 // Catatan: Fungsi yang dipanggil di sini harus sudah diimplementasikan
 // di file lowongan.cpp dan mahasiswa.cpp masing-masing.
 
+#include <fstream> // Include for file reading
+
+// Helper function to calculate ATS Score from File
+int hitungSkorATS(string filePath) {
+    int score = 0;
+    string keywords[] = {"C++", "Python", "Java", "SQL", "Teamwork", "Leadership", "Communication", "Problem Solving", "Analisis", "Desain"};
+    
+    ifstream file(filePath, ios::binary); // Open in binary mode to handle PDF/any file safely
+    if (!file.is_open()) {
+        return 0; // File not found or cannot open
+    }
+
+    // Read entire file into a string buffer
+    string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+    file.close();
+
+    for (const string& keyword : keywords) {
+        // Simple search in the raw binary/text content
+        if (content.find(keyword) != string::npos) {
+            score += 10;
+        }
+    }
+    return score;
+}
+
 // 1. Insert element relation (Mahasiswa Ajukan Lamaran)
-void insertRelasi(ListParent &L_Parent, ListChild &L_Child, int ID_Lowongan, string NIM_Mhs, string Nama_Mhs, int ID_Lamaran_Baru) {
+void insertRelasi(ListParent &L_Parent, ListChild &L_Child, int ID_Lowongan, string NIM_Mhs, string Nama_Mhs, int ID_Lamaran_Baru, string CV_Path) {
     // 1. Pastikan data Mahasiswa ada/dibuat di List Child
     handleInputMahasiswa(L_Child, NIM_Mhs, Nama_Mhs);
 
@@ -23,6 +48,8 @@ void insertRelasi(ListParent &L_Parent, ListChild &L_Child, int ID_Lowongan, str
         R_Baru->info.id_lamaran = ID_Lamaran_Baru;
         R_Baru->info.status_dosen = 0; // Menunggu
         R_Baru->info.status_perusahaan = 0; // Menunggu
+        R_Baru->info.cv_path = CV_Path;
+        R_Baru->info.cv_score = hitungSkorATS(CV_Path);
 
         // 3. Hubungkan Pointer Kunci MLL
         R_Baru->ptr_parent = P_Parent;
@@ -38,6 +65,8 @@ void insertRelasi(ListParent &L_Parent, ListChild &L_Child, int ID_Lowongan, str
             R_Last->next = R_Baru;
         }
         cout << " [BERHASIL] Lamaran ID: " << ID_Lamaran_Baru << " (Simpan ID ini untuk verifikasi!) diajukan ke Lowongan ID: " << ID_Lowongan << "." << endl;
+        cout << " [ATS] File CV diproses: " << CV_Path << endl;
+        cout << " [ATS] Skor awal: " << R_Baru->info.cv_score << endl;
     } else {
         cout << " Error: Lowongan ID " << ID_Lowongan << " tidak ditemukan. Lamaran dibatalkan." << endl;
     }
@@ -67,6 +96,7 @@ void showStatusLamaranMahasiswa(ListParent L_Parent, string NIM_Target) {
                      << " (" << P->info.nama_perusahaan << ")" << endl;
                 cout << "    Status Dosen: " << (R->info.status_dosen == 1 ? "Disetujui" : (R->info.status_dosen == 2 ? "Ditolak" : "Menunggu")) << endl;
                 cout << "    Status Perusahaan: " << (R->info.status_perusahaan == 1 ? "**DITERIMA**" : (R->info.status_perusahaan == 2 ? "DITOLAK" : "Menunggu")) << endl;
+                cout << "    Skor ATS: " << R->info.cv_score << endl;
                 cout << "---------------------------------------" << endl;
             }
             R = R->next;
@@ -107,8 +137,10 @@ void showRekapLamaranPerusahaan(ListParent L_Parent) {
                 }
 
                 address_child C = R->ptr_child;
-                cout << "   - NIM: " << C->info.nim << " | Nama: " << C->info.nama
-                     << " | Status Akhir: " << (R->info.status_perusahaan == 1 ? "DITERIMA" : "DITOLAK/MENUNGGU") << endl;
+                cout << "   - NIM: " << C->info.nim << " | Nama: " << C->info.nama << endl;
+                cout << "     File CV: " << R->info.cv_path << endl;
+                cout << "     Skor ATS: " << R->info.cv_score << endl;
+                cout << "     Status Akhir: " << (R->info.status_perusahaan == 1 ? "DITERIMA" : "DITOLAK/MENUNGGU") << endl;
 
                 R = R->next;
             }

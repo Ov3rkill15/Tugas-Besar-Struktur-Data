@@ -52,6 +52,8 @@ struct InfoLamaran {
     int id_lamaran;
     int status_dosen;
     int status_perusahaan;
+    string cv_path; // Menyimpan path file CV
+    int cv_score;   // Menyimpan skor ATS
 };
 
 struct NodeRelasi {

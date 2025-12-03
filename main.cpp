@@ -4,8 +4,33 @@
 #include "lamaran.h"
 #include <limits>
 #include <iomanip>
+#include <windows.h>
+#include <commdlg.h>
 
 using namespace std;
+
+// Helper function to open File Dialog
+string OpenFileDialog() {
+    OPENFILENAME ofn;
+    char szFile[260];
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = NULL;
+    ofn.lpstrFile = szFile;
+    ofn.lpstrFile[0] = '\0';
+    ofn.nMaxFile = sizeof(szFile);
+    ofn.lpstrFilter = "PDF Files\0*.pdf\0All Files\0*.*\0";
+    ofn.nFilterIndex = 1;
+    ofn.lpstrFileTitle = NULL;
+    ofn.nMaxFileTitle = 0;
+    ofn.lpstrInitialDir = NULL;
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+    if (GetOpenFileName(&ofn) == TRUE) {
+        return string(ofn.lpstrFile);
+    }
+    return "";
+}
 
 // Deklarasi fungsi Show (yang implementasinya ada di lowongan.cpp dan mahasiswa.cpp)
 // --- FUNGSI UTAMA ---
@@ -17,191 +42,206 @@ int main() {
 
     // --- LOGIN SYSTEM INTEGRATION ---
     initUsers(); // Initialize hardcoded users
-    string activeUser;
-    if (!Login(activeUser)) {
-        cout << "Aplikasi ditutup." << endl;
-        return 0;
-    }
-    // --------------------------------
-
-
-    int counter_lowongan = 103;
-    int counter_lamaran = 1;
-    int pilihan_menu_utama;
-
-    cout << "========================================" << endl;
-    cout << " SISTEM LAYANAN MAGANG (MLL TIPE B) " << endl;
-    cout << "========================================" << endl;
-
-    // Tambahkan beberapa data awal Lowongan (Parent) untuk pengujian Relasi
-    insertParent(L_Parent, alokasiParent(101, "Data Scientist", "TechCorp", 5.0));
-    insertParent(L_Parent, alokasiParent(102, "Mobile Developer", "GameDev", 3.0));
-
-
-    do {
-        cout << "\n\n--- MENU UTAMA ---" << endl;
-        cout << "1. Input Lowongan Baru (Parent)" << endl;
-        cout << "2. Input Data Mahasiswa Baru (Child)" << endl;
-        cout << "3. Ajukan Lamaran (Insert Relasi)" << endl;
-        cout << "4. Verifikasi Dosen (Edit Relasi)" << endl;
-        cout << "5. Keputusan Perusahaan (Edit Relasi)" << endl;
-        cout << "6. Tampilkan Semua Lowongan & Pelamar (Show All M:N)" << endl;
-        cout << "7. Tampilkan Data Lowongan (Parent & Child)" << endl;
-        cout << "8. Tampilkan Data Pelamar (Parent & Child)" << endl;
-        cout << "9. **STATUS LAMARAN (MAHASISWA)**" << endl; // <-- OPSI BARU (Mahasiswa)
-        cout << "10. **REKAP LAMARAN (ADMIN/PERUSAHAAN)**" << endl; // <-- OPSI BARU (Perusahaan/Admin)
-        cout << "11. Keluar" << endl; // Exit option adjusted
-        cout << "Pilihan Anda: ";
-
-
-        if (!(cin >> pilihan_menu_utama)) {
-            cout << "Input tidak valid. Silakan masukkan angka." << endl;
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            continue;
+    
+    while (true) { // Outer loop for Login/Logout
+        string activeUser, activeRole;
+        if (!Login(activeUser, activeRole)) {
+            cout << "Aplikasi ditutup." << endl;
+            return 0;
         }
+        // --------------------------------
 
-        switch (pilihan_menu_utama) {
-            case 1: { // Input Lowongan Baru (Parent)
-                int pilihan_sub;
-                do {
-                    menuInsertParent(L_Parent, counter_lowongan);
-                    cout << "\n--- SUB-MENU ---" << endl;
-                    cout << "1. Input Lowongan Lagi" << endl;
-                    cout << "2. Kembali ke Menu Utama" << endl;
-                    cout << "Pilihan: ";
-                    if (!(cin >> pilihan_sub)) {
-                        cout << "Input tidak valid." << endl;
-                        cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                        pilihan_sub = 0;
-                    } else if (pilihan_sub == 2) {
-                        // FIX LOOPING: Bersihkan buffer setelah membaca angka sub-menu
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    }
-                } while (pilihan_sub == 1);
-                break;
+        int counter_lowongan = 107; // Start after hardcoded ones
+        int counter_lamaran = 1;
+        int pilihan_menu_utama;
+
+        cout << "========================================" << endl;
+        cout << " SISTEM LAYANAN MAGANG (MLL TIPE B) " << endl;
+        cout << "========================================" << endl;
+        cout << "Selamat Datang, " << activeUser << " (" << activeRole << ")" << endl;
+
+        // Tambahkan beberapa data awal Lowongan (Parent) untuk pengujian Relasi
+        // Hardcoded 5+ vacancies as requested
+        if (L_Parent.first == nullptr) { 
+             insertParent(L_Parent, alokasiParent(101, "Data Scientist", "TechCorp", 3.5));
+             insertParent(L_Parent, alokasiParent(102, "Mobile Developer", "GameDev", 3.0));
+             insertParent(L_Parent, alokasiParent(103, "Backend Engineer", "ServerX", 3.2));
+             insertParent(L_Parent, alokasiParent(104, "UI/UX Designer", "CreativeStudio", 3.0));
+             insertParent(L_Parent, alokasiParent(105, "DevOps Engineer", "CloudSys", 3.5));
+             insertParent(L_Parent, alokasiParent(106, "Product Manager", "StartUpInc", 3.0));
+        }
+        
+        do {
+            cout << "\n\n--- MENU UTAMA (" << activeRole << ") ---" << endl;
+            
+            if (activeRole == "mahasiswa") {
+                cout << "1. Input Data Diri" << endl;
+                cout << "2. Lihat Daftar Lowongan" << endl; 
+                cout << "3. Ajukan Lamaran (Upload CV)" << endl;
+                cout << "4. Cek Status Lamaran" << endl;
+                cout << "0. Keluar (Logout)" << endl;
+            } else if (activeRole == "dosen") {
+                cout << "1. Verifikasi Lamaran" << endl;
+                cout << "2. Lihat Daftar Lowongan" << endl;
+                cout << "0. Keluar (Logout)" << endl;
+            } else if (activeRole == "perusahaan") {
+                cout << "1. Input Lowongan Baru" << endl;
+                cout << "2. Berikan Keputusan Lamaran" << endl;
+                cout << "3. Rekap Lamaran Masuk (ATS Score)" << endl;
+                cout << "0. Keluar (Logout)" << endl;
+            } else if (activeRole == "admin") {
+                cout << "1. Kelola User (Admin Panel)" << endl;
+                cout << "2. Lihat Semua Data (M:N)" << endl;
+                cout << "3. Rekap Semua Lamaran" << endl;
+                cout << "0. Keluar (Logout)" << endl;
             }
-            case 2: { // Input Data Mahasiswa Baru (Child)
-                int pilihan_sub;
-                do {
-                    string nim_input;
-                    char nama_input[100];
-                    int angkatan_input;
 
-                    cout << "\n--- INPUT MAHASISWA BARU ---" << endl;
-
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-                    cout << "Masukkan NIM: "; getline(cin, nim_input);
-                    cout << "Masukkan Nama Lengkap: "; cin.getline(nama_input, 100);
-
-                    cout << "Masukkan Angkatan (Tahun): ";
-                    if (!(cin >> angkatan_input)) {
-                        cout << "Input Angkatan tidak valid. Mahasiswa dibatalkan." << endl;
-                        cin.clear();
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                        pilihan_sub = 1;
-                        continue;
-                    }
-
-                    if (findChildByNIM(L_Child, nim_input) != nullptr) {
-                        cout << "Gagal. Mahasiswa dengan NIM " << nim_input << " sudah ada." << endl;
-                    } else {
-                        address_child C_Baru = alokasiChild(nim_input, nama_input, angkatan_input);
-                        insertChild(L_Child, C_Baru);
-                        cout << "Mahasiswa " << nama_input << " berhasil ditambahkan." << endl;
-                    }
-
-                    cout << "\n--- SUB-MENU ---" << endl;
-                    cout << "1. Input Mahasiswa Lagi" << endl;
-                    cout << "2. Kembali ke Menu Utama" << endl;
-                    cout << "Pilihan: ";
-                    if (!(cin >> pilihan_sub)) {
-                        cout << "Input tidak valid." << endl;
-                        cin.clear();
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                        pilihan_sub = 0;
-                    } else if (pilihan_sub == 2) {
-                        // FIX LOOPING: Bersihkan buffer setelah membaca angka sub-menu
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    }
-                } while (pilihan_sub == 1);
-                break;
+            cout << "Pilihan Anda: ";
+            if (!(cin >> pilihan_menu_utama)) {
+                cout << "Input tidak valid." << endl;
+                cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                continue;
             }
-            case 3: { // Ajukan Lamaran (INSERT ELEMENT RELATION)
-                int id_lowongan_input;
-                string nim_input;
-                char nama_input[100];
 
-                cout << "--- PENGINPUTAN DATA PELAMAR ---" << endl;
-                cout << "Masukkan ID Lowongan yang dilamar: ";
-                if (!(cin >> id_lowongan_input)) {
-                    cout << "Input ID Lowongan tidak valid. Lamaran dibatalkan." << endl;
-                    cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); break;
+            if (pilihan_menu_utama == 0) {
+                cout << "Logging out..." << endl;
+                // Fix buffer issue: Clear buffer before returning to Login (which uses getline)
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                Loading(1000);
+                break; // Breaks the inner loop, goes back to Login
+            }
+
+            // --- LOGIKA MENU BERDASARKAN ROLE ---
+            
+            if (activeRole == "mahasiswa") {
+                switch (pilihan_menu_utama) {
+                    case 1: { // Input Data Diri
+                        int pilihan_sub;
+                        do {
+                            string nim_input;
+                            char nama_input[100];
+                            int angkatan_input;
+                            cout << "\n--- INPUT DATA DIRI ---" << endl;
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "Masukkan NIM: "; getline(cin, nim_input);
+                            cout << "Masukkan Nama Lengkap: "; cin.getline(nama_input, 100);
+                            cout << "Masukkan Angkatan (Tahun): ";
+                            if (!(cin >> angkatan_input)) {
+                                cout << "Input Angkatan tidak valid." << endl;
+                                cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                                pilihan_sub = 1; continue;
+                            }
+                            if (findChildByNIM(L_Child, nim_input) != nullptr) {
+                                cout << "Data Mahasiswa sudah ada." << endl;
+                            } else {
+                                insertChild(L_Child, alokasiChild(nim_input, nama_input, angkatan_input));
+                                cout << "Data berhasil disimpan." << endl;
+                            }
+                            cout << "1. Input Lagi, 2. Kembali: "; cin >> pilihan_sub;
+                        } while (pilihan_sub == 1);
+                        break;
+                    }
+                    case 2: { // Lihat Daftar Lowongan
+                        showLowongan(L_Parent);
+                        break;
+                    }
+                    case 3: { // Ajukan Lamaran + CV (PDF Picker)
+                        int id_lowongan_input;
+                        string nim_input, cv_path;
+                        char nama_input[100];
+                        
+                        cout << "--- AJUKAN LAMARAN ---" << endl;
+                        cout << "1. Pilih File CV (PDF/Lainnya) akan terbuka otomatis..." << endl;
+                        system("pause"); // Give user a moment to read before dialog opens
+                        
+                        cv_path = OpenFileDialog();
+                        if (cv_path.empty()) {
+                            cout << "Tidak ada file yang dipilih. Lamaran dibatalkan." << endl;
+                            break;
+                        }
+                        cout << "File terpilih: " << cv_path << endl;
+
+                        cout << "Masukkan ID Lowongan: "; cin >> id_lowongan_input;
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        
+                        cout << "Masukkan NIM Anda: "; getline(cin, nim_input);
+                        cout << "Masukkan Nama Lengkap: "; cin.getline(nama_input, 100);
+                        
+                        insertRelasi(L_Parent, L_Child, id_lowongan_input, nim_input, nama_input, counter_lamaran++, cv_path);
+                        break;
+                    }
+                    case 4: { // Status Lamaran
+                        string nim_input;
+                        cout << "\n--- STATUS LAMARAN ---" << endl;
+                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                        cout << "Masukkan NIM Anda: "; getline(cin, nim_input);
+                        showStatusLamaranMahasiswa(L_Parent, nim_input);
+                        break;
+                    }
+                    default: cout << "Pilihan tidak valid." << endl;
                 }
+            } 
+            else if (activeRole == "dosen") {
+                switch (pilihan_menu_utama) {
+                    case 1: { // Verifikasi
+                        int id_lamaran_target, status_baru;
+                        cout << "Masukkan ID Lamaran (BUKAN ID Lowongan): "; cin >> id_lamaran_target;
+                        cout << "Status Verifikasi (1=DISETUJUI, 2=DITOLAK): "; cin >> status_baru;
+                        editStatusDosen(L_Parent, id_lamaran_target, status_baru);
+                        break;
+                    }
+                    case 2: { // Lihat Lowongan
+                        showLowongan(L_Parent);
+                        break;
+                    }
+                    default: cout << "Pilihan tidak valid." << endl;
+                }
+            }
+            else if (activeRole == "perusahaan") {
+                switch (pilihan_menu_utama) {
+                    case 1: { // Input Lowongan
+                        int pilihan_sub;
+                        do {
+                            menuInsertParent(L_Parent, counter_lowongan);
+                            cout << "1. Input Lagi, 2. Kembali: "; cin >> pilihan_sub;
+                        } while (pilihan_sub == 1);
+                        break;
+                    }
+                    case 2: { // Keputusan
+                        int id_lamaran_target, status_baru;
+                        cout << "Masukkan ID Lamaran (BUKAN ID Lowongan): "; cin >> id_lamaran_target;
+                        cout << "Status Keputusan (1=DITERIMA, 2=DITOLAK): "; cin >> status_baru;
+                        editStatusPerusahaan(L_Parent, id_lamaran_target, status_baru);
+                        break;
+                    }
+                    case 3: { // Rekap
+                        showRekapLamaranPerusahaan(L_Parent);
+                        break;
+                    }
+                    default: cout << "Pilihan tidak valid." << endl;
+                }
+            }
+            else if (activeRole == "admin") {
+                switch (pilihan_menu_utama) {
+                    case 1: { // Admin Panel
+                        bool logout = false;
+                        MainAdmin("admin", logout); 
+                        break;
+                    }
+                    case 2: { // Show All
+                        showLowonganDanPelamar(L_Parent);
+                        break;
+                    }
+                    case 3: { // Rekap
+                        showRekapLamaranPerusahaan(L_Parent);
+                        break;
+                    }
+                    default: cout << "Pilihan tidak valid." << endl;
+                }
+            }
 
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-                cout << "Masukkan NIM Anda: "; getline(cin, nim_input);
-                cout << "Masukkan Nama Lengkap Anda: "; cin.getline(nama_input, 100);
-
-                insertRelasi(L_Parent, L_Child, id_lowongan_input, nim_input, nama_input, counter_lamaran++);
-                break;
-            }
-            case 4: { // Verifikasi Dosen (EDIT RELASI)
-                int id_lamaran_target, status_baru;
-                cout << "Masukkan ID Lamaran (BUKAN ID Lowongan): "; cin >> id_lamaran_target;
-                cout << "Status Verifikasi (1=DISETUJUI, 2=DITOLAK): "; cin >> status_baru;
-                editStatusDosen(L_Parent, id_lamaran_target, status_baru);
-                break;
-            }
-            case 5: { // Keputusan Perusahaan (EDIT RELASI)
-                int id_lamaran_target, status_baru;
-                cout << "Masukkan ID Lamaran (BUKAN ID Lowongan): "; cin >> id_lamaran_target;
-                cout << "Status Keputusan (1=DITERIMA, 2=DITOLAK): "; cin >> status_baru;
-                editStatusPerusahaan(L_Parent, id_lamaran_target, status_baru);
-                break;
-            }
-            case 6: { // Tampilkan Semua Data (SHOW ALL M:N)
-                showLowonganDanPelamar(L_Parent);
-                break;
-            }
-            case 7: { // Tampilkan Data Dasar
-                showLowongan(L_Parent);
-                break;
-            }
-            case 8: { // Tampilkan Data Dasar
-                showMahasiswa(L_Child);
-                break;
-            }
-           case 9: { // STATUS LAMARAN (MAHASISWA)
-                string nim_input;
-                cout << "\n--- STATUS LAMARAN ---" << endl;
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "Masukkan NIM Anda: ";
-                getline(cin, nim_input);
-                showStatusLamaranMahasiswa(L_Parent, nim_input);
-                break;
-            }
-            case 10: { // REKAP LAMARAN (ADMIN/PERUSAHAAN)
-                showRekapLamaranPerusahaan(L_Parent);
-                break;
-            }
-            case 11:
-                cout << R"(
- _____ _____ ____  ___ __  __    _    _  __    _    ____ ___ _   _
-|_   _| ____|  _ \|_ _|  \/  |  / \  | |/ /   / \  / ___|_ _| | | |
-  | | |  _| | |_) || || |\/| | / _ \ | ' /   / _ \ \___ \| || |_| |
-  | | | |___|  _ < | || |  | |/ ___ \| . \  / ___ \ ___) | ||  _  |
-  |_| |_____|_| \_\___|_|  |_/_/   \_\_|\_\/_/   \_\____/___|_| |_|
-)" << endl;
-                break;
-            default:
-                cout << "Pilihan tidak ditemukan." << endl;
-        }
-
-    } while (pilihan_menu_utama != 11); // Kondisi keluar disesuaikan
+        } while (true);
+    }
 
     return 0;
 }
-

@@ -101,50 +101,52 @@ void PrintAdminHeader() {
 // Core Functions
 void initUsers() {
     // Data awal pengguna hardcoded
-    struct InitData { string u; string p; };
+    struct InitData { string u; string p; string r; };
     vector<InitData> data = {
-        {"admin", "admin123"},
-        {"nathasyayuanmaharani", "0001"},
-        {"theodoreelvisestrada", "0006"},
-        {"dyahkusumawardani", "0009"},
-        {"azrielraihaneldovahartoto", "0010"},
-        {"muhammadilhamalifianda", "0022"},
-        {"alyaazizaputeri", "0026"},
-        {"ahmadabdansyakuro", "0029"},
-        {"fathurrahmanalfarizi", "0035"},
-        {"nuswantorosetyomukti", "0040"},
-        {"anggitacahyatihidayat", "0041"},
-        {"wibnuhijrahfranstio", "0048"},
-        {"meyshaprimiandita", "0050"},
-        {"muhamadfiqrihabibi", "0056"},
-        {"fitriacahyani", "0060"},
-        {"triansyahdaniswaraibrahim", "0062"},
-        {"rakhaabdillahalkautsar", "0068"},
-        {"avicenanaufallathif", "0073"},
-        {"naylaassyifa", "0078"},
-        {"williampetervanxnajoan", "0084"},
-        {"rayvanalifarlomahesworo", "0087"},
-        {"zaidansalamrojab", "0088"},
-        {"audreyfredileyhanas", "0093"},
-        {"muhammadnaelfadly", "0096"},
-        {"nairacahayaputridarmawansinaga", "0100"},
-        {"muhamadalwansuryadi", "0104"},
-        {"dhafyahmadzubaidi", "0107"},
-        {"muhammadfarisdhiyaylhaqsarbini", "0117"},
-        {"nursyadira", "0123"},
-        {"rayfitokrisnawijaya", "0124"},
-        {"mochammadrafirisqullah", "0129"},
-        {"iputugedeagastyakrisnawidartha", "0134"},
-        {"rendil", "0137"},
-        {"muhammadariqazzaki", "0138"},
-        {"edmundyuliusgantur", "0155"},
-        {"muhammadsayyidhuwaidi", "0157"},
-        {"muhdzuljalalwaliikramjalil", "0160"},
-        {"ramadhantangguhdefennder", "0003"},
-        {"adzkiyaputrirahmawan", "0025"},
-        {"fathimahradhiyya", "0029"},
-        {"rakanghazianadiwjaya", "0034"},
-        {"jihannabilamubarakah", "0037"}
+        {"admin", "admin123", "admin"},
+        {"dosen1", "dosen123", "dosen"},
+        {"techcorp", "123", "perusahaan"},
+        {"nathasyayuanmaharani", "0001", "mahasiswa"},
+        {"theodoreelvisestrada", "0006", "mahasiswa"},
+        {"dyahkusumawardani", "0009", "mahasiswa"},
+        {"azrielraihaneldovahartoto", "0010", "mahasiswa"},
+        {"muhammadilhamalifianda", "0022", "mahasiswa"},
+        {"alyaazizaputeri", "0026", "mahasiswa"},
+        {"ahmadabdansyakuro", "0029", "mahasiswa"},
+        {"fathurrahmanalfarizi", "0035", "mahasiswa"},
+        {"nuswantorosetyomukti", "0040", "mahasiswa"},
+        {"anggitacahyatihidayat", "0041", "mahasiswa"},
+        {"wibnuhijrahfranstio", "0048", "mahasiswa"},
+        {"meyshaprimiandita", "0050", "mahasiswa"},
+        {"muhamadfiqrihabibi", "0056", "mahasiswa"},
+        {"fitriacahyani", "0060", "mahasiswa"},
+        {"triansyahdaniswaraibrahim", "0062", "mahasiswa"},
+        {"rakhaabdillahalkautsar", "0068", "mahasiswa"},
+        {"avicenanaufallathif", "0073", "mahasiswa"},
+        {"naylaassyifa", "0078", "mahasiswa"},
+        {"williampetervanxnajoan", "0084", "mahasiswa"},
+        {"rayvanalifarlomahesworo", "0087", "mahasiswa"},
+        {"zaidansalamrojab", "0088", "mahasiswa"},
+        {"audreyfredileyhanas", "0093", "mahasiswa"},
+        {"muhammadnaelfadly", "0096", "mahasiswa"},
+        {"nairacahayaputridarmawansinaga", "0100", "mahasiswa"},
+        {"muhamadalwansuryadi", "0104", "mahasiswa"},
+        {"dhafyahmadzubaidi", "0107", "mahasiswa"},
+        {"muhammadfarisdhiyaylhaqsarbini", "0117", "mahasiswa"},
+        {"nursyadira", "0123", "mahasiswa"},
+        {"rayfitokrisnawijaya", "0124", "mahasiswa"},
+        {"mochammadrafirisqullah", "0129", "mahasiswa"},
+        {"iputugedeagastyakrisnawidartha", "0134", "mahasiswa"},
+        {"rendil", "0137", "mahasiswa"},
+        {"muhammadariqazzaki", "0138", "mahasiswa"},
+        {"edmundyuliusgantur", "0155", "mahasiswa"},
+        {"muhammadsayyidhuwaidi", "0157", "mahasiswa"},
+        {"muhdzuljalalwaliikramjalil", "0160", "mahasiswa"},
+        {"ramadhantangguhdefennder", "0003", "mahasiswa"},
+        {"adzkiyaputrirahmawan", "0025", "mahasiswa"},
+        {"fathimahradhiyya", "0029", "mahasiswa"},
+        {"rakanghazianadiwjaya", "0034", "mahasiswa"},
+        {"jihannabilamubarakah", "0037", "mahasiswa"}
     };
 
     jumlahPengguna = 0;
@@ -152,6 +154,7 @@ void initUsers() {
         if (jumlahPengguna < NMAX_USER) {
             users[jumlahPengguna].username = d.u;
             users[jumlahPengguna].password = d.p;
+            users[jumlahPengguna].role = d.r;
             jumlahPengguna++;
         }
     }
@@ -175,7 +178,7 @@ bool isUsernameExists(string username) {
     return false;
 }
 
-bool Login(string &activeUser) {
+bool Login(string &activeUser, string &activeRole) {
     string pilihan;
     bool running = true;
 
@@ -198,19 +201,22 @@ bool Login(string &activeUser) {
 
                 if (AuthenticateUser(u, p)) {
                     activeUser = u;
+                    
+                    // Find role
+                    for(int i=0; i<jumlahPengguna; i++) {
+                        if(users[i].username == u) {
+                            activeRole = users[i].role;
+                            break;
+                        }
+                    }
+
                     ClearScreen();
-                    cout << "Login berhasil!" << endl;
+                    cout << "Login berhasil! Role: " << activeRole << endl;
                     cout << "Menuju Aplikasi..." << endl;
                     Loading(1200);
 
-                    if (activeUser == "admin") {
-                        bool adminLogout = false;
-                        MainAdmin("admin", adminLogout);
-                        if (adminLogout) {
-                            break; // Kembali ke menu login utama
-                        }
-                    }
-                    return true; // Masuk ke aplikasi utama
+                    // Admin specific check removed here, will be handled in main.cpp
+                    return true; 
                 } else {
                     cout << "Username atau password salah." << endl;
                     attempts++;
@@ -246,6 +252,7 @@ bool Login(string &activeUser) {
                 if (p1 == p2) {
                     users[jumlahPengguna].username = u;
                     users[jumlahPengguna].password = p1;
+                    users[jumlahPengguna].role = "mahasiswa"; // Default role
                     jumlahPengguna++;
                     cout << "Signup berhasil! Silakan login." << endl;
                     success = true;
