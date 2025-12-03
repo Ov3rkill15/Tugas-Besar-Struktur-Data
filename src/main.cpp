@@ -321,6 +321,7 @@ int main() {
     // Cleanup: Delete all uploaded files
     cout << "Cleaning up temporary files..." << endl;
     system("del /Q uploads\\* 2> NUL");
+    system("del search_results.txt 2> NUL");
 
     return 0;
 }
