@@ -58,7 +58,7 @@ Sistem Layanan Magang adalah aplikasi berbasis konsol (CLI) yang dibangun menggu
 
 | Role | Username | Password |
 | :--- | :--- | :--- |
-| **Mahasiswa** | `nathasyayuanmaharani` | `0001` |
+| **Mahasiswa** | `muhamadalwansuryadi` | `0104` |
 | **Dosen** | `dosen1` | `dosen123` |
 | **Perusahaan** | `techcorp` | `123` |
 | **Admin** | `admin` | `admin123` |
