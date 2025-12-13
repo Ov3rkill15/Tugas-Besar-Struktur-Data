@@ -10,4 +10,6 @@ void insertChild(ListChild &L, address_child C_Baru);
 address_child findChildByNIM(ListChild L, string NIM_Target);
 void showMahasiswa(ListChild L_Child);
 void handleInputMahasiswa(ListChild &L_Child, string NIM, string Nama); // Untuk input dinamis
+void cleanupRelasiBeforeChildDeletion(ListParent &L_Parent, string NIM_Target);
+void deleteChildByNIM(ListChild &L_Child, ListParent &L_Parent, string NIM_Target);
 #endif // MAHASISWA_H
