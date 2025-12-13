@@ -140,41 +140,70 @@ int main() {
             }
             // -------------------------------------------
 
-            cout << "\n\n--- MENU UTAMA (" << activeRole << ") ---" << endl;
+            cout << "\n";
+            cout << "\033[36m"; // Cyan color
+            cout << "+============================================+" << endl;
+            cout << "|           MENU UTAMA (" << activeRole << ")" << endl;
+            cout << "+============================================+" << endl;
+            cout << "\033[0m"; // Reset color
             
             // Display Menu based on Role using Switch
             switch (getRoleEnum(activeRole)) {
                 case ROLE_MAHASISWA:
-                    cout << "1. Input Data Diri" << endl;
-                    cout << "2. Lihat Daftar Lowongan" << endl; 
-                    cout << "3. Ajukan Lamaran (Upload CV)" << endl;
-                    cout << "4. Cek Status Lamaran" << endl;
-                    cout << "5. Pesan (" << notifCount << ")" << endl;
-                    cout << "0. Keluar (Logout)" << endl;
+                    cout << "\033[33m"; // Yellow
+                    cout << "| [1] " << char(175) << " Input Data Diri              |" << endl;
+                    cout << "| [2] " << char(175) << " Lihat Daftar Lowongan        |" << endl;
+                    cout << "| [3] " << char(175) << " Ajukan Lamaran (Upload CV)   |" << endl;
+                    cout << "| [4] " << char(175) << " Cek Status Lamaran           |" << endl;
+                    cout << "| [5] " << char(175) << " Cari Lowongan (by ID)        |" << endl;
+                    cout << "| [6] " << char(175) << " Pesan (" << notifCount << ")                      |" << endl;
+                    cout << "\033[31m"; // Red
+                    cout << "| [0] " << char(174) << " Keluar (Logout)              |" << endl;
+                    cout << "\033[0m";
                     break;
                 case ROLE_DOSEN:
-                    cout << "1. Verifikasi Lamaran" << endl;
-                    cout << "2. Lihat Daftar Lowongan" << endl;
-                    cout << "3. Rekap Lamaran Mahasiswa" << endl;
-                    cout << "0. Keluar (Logout)" << endl;
+                    cout << "\033[33m";
+                    cout << "| [1] " << char(175) << " Verifikasi Lamaran           |" << endl;
+                    cout << "| [2] " << char(175) << " Lihat Daftar Lowongan        |" << endl;
+                    cout << "| [3] " << char(175) << " Rekap Lamaran Mahasiswa      |" << endl;
+                    cout << "| [4] " << char(175) << " Cari Mahasiswa (by NIM)      |" << endl;
+                    cout << "| [5] " << char(175) << " Hapus Mahasiswa (by NIM)     |" << endl;
+                    cout << "\033[31m";
+                    cout << "| [0] " << char(174) << " Keluar (Logout)              |" << endl;
+                    cout << "\033[0m";
                     break;
                 case ROLE_PERUSAHAAN:
-                    cout << "1. Input Lowongan Baru" << endl;
-                    cout << "2. Berikan Keputusan Lamaran" << endl;
-                    cout << "3. Rekap Lamaran Masuk (ATS Score)" << endl;
-                    cout << "4. Cari Lowongan Online (API)" << endl;
-                    cout << "0. Keluar (Logout)" << endl;
+                    cout << "\033[33m";
+                    cout << "| [1] " << char(175) << " Input Lowongan Baru          |" << endl;
+                    cout << "| [2] " << char(175) << " Berikan Keputusan Lamaran    |" << endl;
+                    cout << "| [3] " << char(175) << " Rekap Lamaran (ATS Score)    |" << endl;
+                    cout << "| [4] " << char(175) << " Cari Lowongan Online (API)   |" << endl;
+                    cout << "| [5] " << char(175) << " Cari Mahasiswa (by NIM)      |" << endl;
+                    cout << "| [6] " << char(175) << " Hapus Lowongan (by ID)       |" << endl;
+                    cout << "\033[31m";
+                    cout << "| [0] " << char(174) << " Keluar (Logout)              |" << endl;
+                    cout << "\033[0m";
                     break;
                 case ROLE_ADMIN:
-                    cout << "1. Kelola User (Admin Panel)" << endl;
-                    cout << "2. Lihat Semua Data (M:N)" << endl;
-                    cout << "3. Rekap Semua Lamaran" << endl;
-                    cout << "0. Keluar (Logout)" << endl;
+                    cout << "\033[33m";
+                    cout << "| [1] " << char(175) << " Kelola User (Admin Panel)    |" << endl;
+                    cout << "| [2] " << char(175) << " Lihat Semua Data (M:N)       |" << endl;
+                    cout << "| [3] " << char(175) << " Rekap Semua Lamaran          |" << endl;
+                    cout << "| [4] " << char(175) << " Cari Mahasiswa (by NIM)      |" << endl;
+                    cout << "| [5] " << char(175) << " Cari Lowongan (by ID)        |" << endl;
+                    cout << "| [6] " << char(175) << " Hapus Mahasiswa (by NIM)     |" << endl;
+                    cout << "| [7] " << char(175) << " Hapus Lowongan (by ID)       |" << endl;
+                    cout << "\033[31m";
+                    cout << "| [0] " << char(174) << " Keluar (Logout)              |" << endl;
+                    cout << "\033[0m";
                     break;
                 default:
                     cout << "Role tidak dikenali." << endl;
                     break;
             }
+            cout << "\033[36m";
+            cout << "+============================================+" << endl;
+            cout << "\033[0m";
 
             cout << "Pilihan Anda: ";
             if (!(cin >> pilihan_menu_utama)) {
@@ -279,7 +308,12 @@ int main() {
                             showStatusLamaranMahasiswa(L_Parent, nim_input);
                             break;
                         }
-                        case 5: { // Pesan / Notifikasi
+                        case 5: { // Cari Lowongan (by ID)
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            menuCariLowongan(L_Parent);
+                            break;
+                        }
+                        case 6: { // Pesan / Notifikasi
                             if (currentNIM.empty()) {
                                 cout << "Silakan 'Input Data Diri' terlebih dahulu agar sistem mengenali NIM Anda." << endl;
                             } else {
@@ -308,6 +342,19 @@ int main() {
                         case 3: { // Rekap Lamaran
                             showRekapLamaranDosen(L_Parent);
                             system("pause");
+                            break;
+                        }
+                        case 4: { // Cari Mahasiswa (by NIM)
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            menuCariMahasiswa(L_Child);
+                            break;
+                        }
+                        case 5: { // Hapus Mahasiswa (by NIM)
+                            string nim_hapus;
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "Masukkan NIM Mahasiswa yang akan dihapus: ";
+                            getline(cin, nim_hapus);
+                            deleteChildByNIM(L_Child, L_Parent, nim_hapus);
                             break;
                         }
                         default: cout << "Pilihan tidak valid." << endl;
@@ -347,6 +394,18 @@ int main() {
                             importLowonganFromAPI(L_Parent, "search_results.txt");
                             break;
                         }
+                        case 5: { // Cari Mahasiswa (by NIM)
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            menuCariMahasiswa(L_Child);
+                            break;
+                        }
+                        case 6: { // Hapus Lowongan (by ID)
+                            int id_hapus;
+                            cout << "Masukkan ID Lowongan yang akan dihapus: ";
+                            cin >> id_hapus;
+                            deleteParentByID(L_Parent, id_hapus);
+                            break;
+                        }
                         default: cout << "Pilihan tidak valid." << endl;
                     }
                     break;
@@ -364,6 +423,30 @@ int main() {
                         }
                         case 3: { // Rekap
                             showRekapLamaranPerusahaan(L_Parent);
+                            break;
+                        }
+                        case 4: { // Cari Mahasiswa (by NIM)
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            menuCariMahasiswa(L_Child);
+                            break;
+                        }
+                        case 5: { // Cari Lowongan (by ID)
+                            menuCariLowongan(L_Parent);
+                            break;
+                        }
+                        case 6: { // Hapus Mahasiswa (by NIM)
+                            string nim_hapus;
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "Masukkan NIM Mahasiswa yang akan dihapus: ";
+                            getline(cin, nim_hapus);
+                            deleteChildByNIM(L_Child, L_Parent, nim_hapus);
+                            break;
+                        }
+                        case 7: { // Hapus Lowongan (by ID)
+                            int id_hapus;
+                            cout << "Masukkan ID Lowongan yang akan dihapus: ";
+                            cin >> id_hapus;
+                            deleteParentByID(L_Parent, id_hapus);
                             break;
                         }
                         default: cout << "Pilihan tidak valid." << endl;

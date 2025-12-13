@@ -185,9 +185,18 @@ bool Login(string &activeUser, string &activeRole) {
     while (running) {
         ClearScreen();
         PrintLoginHeader();
-        cout << "1. Masuk" << endl;
-        cout << "2. Daftar" << endl;
-        cout << "0. Keluar" << endl;
+        cout << "\033[36m"; // Cyan
+        cout << "+========================================+" << endl;
+        cout << "|         SELAMAT DATANG                |" << endl;
+        cout << "+========================================+" << endl;
+        cout << "\033[33m"; // Yellow
+        cout << "| [1] " << char(175) << " Masuk                         |" << endl;
+        cout << "| [2] " << char(175) << " Daftar                        |" << endl;
+        cout << "\033[31m"; // Red
+        cout << "| [0] " << char(174) << " Keluar                        |" << endl;
+        cout << "\033[36m";
+        cout << "+========================================+" << endl;
+        cout << "\033[0m";
         cout << "Pilih yang mana: ";
         getline(cin, pilihan);
 
