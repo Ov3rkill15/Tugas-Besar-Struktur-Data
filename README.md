@@ -63,10 +63,73 @@ Sistem Layanan Magang adalah aplikasi berbasis konsol (CLI) yang dibangun menggu
 | **Perusahaan** | `techcorp` | `123` |
 | **Admin** | `admin` | `admin123` |
 
-## 📝 Struktur Data (MLL)
-- **Parent**: Lowongan Pekerjaan (Double Linked List)
-- **Child**: Data Mahasiswa (Single Linked List)
-- **Relasi**: Lamaran (Single Linked List yang menghubungkan Parent & Child)
+## 📝 Struktur Data (MLL Tipe B)
+
+Sistem ini menggunakan **Multi-Linked List Tipe B**, di mana setiap Parent node memiliki pointer ke list relasi-nya sendiri.
+
+### Komponen Utama
+- **Parent (Lowongan)**: Linked List berisi data lowongan pekerjaan
+- **Child (Mahasiswa)**: Linked List berisi data mahasiswa
+- **Relasi (Lamaran)**: List yang *menempel* pada setiap Parent, menghubungkan ke Child
+
+### Visualisasi Struktur MLL Tipe B
+
+```mermaid
+graph TB
+    subgraph ListParent ["List Parent (Lowongan)"]
+        P1["P1<br/>Data Scientist<br/>TechCorp"]
+        P2["P2<br/>Mobile Dev<br/>GameDev"]
+        P3["P3<br/>Backend Eng<br/>ServerX"]
+        P1 -->|next| P2 -->|next| P3
+    end
+
+    subgraph ListChild ["List Child (Mahasiswa)"]
+        C1["C1<br/>103032400104<br/>Alwan"]
+        C2["C2<br/>103032400105<br/>Fathur"]
+        C3["C3<br/>103032400106<br/>Azriel"]
+        C1 -->|next| C2 -->|next| C3
+    end
+
+    subgraph Relasi1 ["Relasi P1"]
+        R1["R1<br/>Lamaran #1"]
+        R2["R2<br/>Lamaran #2"]
+        R1 -->|next| R2
+    end
+
+    subgraph Relasi2 ["Relasi P2"]
+        R3["R3<br/>Lamaran #3"]
+    end
+
+    %% Parent to Relasi (first_relasi pointer)
+    P1 -.->|first_relasi| R1
+    P2 -.->|first_relasi| R3
+    P3 -.->|first_relasi| NULL1((null))
+
+    %% Relasi to Child (ptr_child pointer)
+    R1 ==>|ptr_child| C1
+    R2 ==>|ptr_child| C2
+    R3 ==>|ptr_child| C1
+
+    %% Styling
+    classDef parent fill:#4fc3f7,stroke:#0288d1,color:#000
+    classDef child fill:#81c784,stroke:#388e3c,color:#000
+    classDef relasi fill:#ffb74d,stroke:#f57c00,color:#000
+    classDef null fill:#e0e0e0,stroke:#9e9e9e,color:#666
+
+    class P1,P2,P3 parent
+    class C1,C2,C3 child
+    class R1,R2,R3 relasi
+    class NULL1 null
+```
+
+### Penjelasan Pointer
+| Pointer | Dari | Ke | Fungsi |
+|---------|------|-----|--------|
+| `next` | Parent/Child/Relasi | Node sejenis berikutnya | Traversal horizontal |
+| `first_relasi` | Parent | Relasi pertama | Akses lamaran di lowongan tsb |
+| `ptr_child` | Relasi | Child | Menunjuk mahasiswa pelamar |
+
+> **Mengapa Tipe B?** Setiap lowongan (Parent) langsung memiliki akses ke daftar pelamarnya tanpa perlu traversal list relasi global.
 
 ## � Fungsi Utama per Modul
 
