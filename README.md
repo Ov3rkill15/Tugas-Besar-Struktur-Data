@@ -8,10 +8,10 @@ Sistem Layanan Magang adalah aplikasi berbasis konsol (CLI) yang dibangun menggu
 ## 🚀 Fitur Utama
 
 ### 1. Multi-Role System
-- **Mahasiswa**: Input data diri, melihat lowongan, upload CV, dan menerima notifikasi penerimaan.
-- **Dosen**: Memverifikasi lamaran mahasiswa dan melihat rekapitulasi pelamar.
-- **Perusahaan**: Membuka lowongan, melihat skor ATS pelamar, review CV, dan memberikan keputusan (Terima/Tolak).
-- **Admin**: Mengelola user dan melihat seluruh data sistem.
+- **Mahasiswa**: Input data diri, melihat lowongan, upload CV, cari lowongan, dan menerima notifikasi penerimaan.
+- **Dosen**: Memverifikasi lamaran, cari mahasiswa, hapus mahasiswa, dan melihat rekapitulasi pelamar.
+- **Perusahaan**: Membuka lowongan, melihat skor ATS pelamar, review CV, cari mahasiswa, hapus lowongan, dan memberikan keputusan (Terima/Tolak).
+- **Admin**: Mengelola user, cari/hapus mahasiswa, cari/hapus lowongan, dan melihat seluruh data sistem.
 
 ### 2. Applicant Tracking System (ATS) 🤖
 - **CV Scoring**: Sistem otomatis memindai file CV (PDF/TXT) untuk mencari kata kunci relevan (misal: "C++", "Teamwork", "Python").
@@ -68,19 +68,51 @@ Sistem Layanan Magang adalah aplikasi berbasis konsol (CLI) yang dibangun menggu
 - **Child**: Data Mahasiswa (Single Linked List)
 - **Relasi**: Lamaran (Single Linked List yang menghubungkan Parent & Child)
 
+## � Fungsi Utama per Modul
+
+### `mahasiswa.cpp`
+| Fungsi | Deskripsi |
+|--------|-----------|  
+| `createListChild()` | Inisialisasi list mahasiswa |
+| `alokasiChild()` | Alokasi node baru mahasiswa |
+| `insertChild()` | Insert mahasiswa ke list |
+| `findChildByNIM()` | Cari mahasiswa berdasarkan NIM |
+| `menuCariMahasiswa()` | Menu interaktif pencarian mahasiswa |
+| `deleteChildByNIM()` | Hapus mahasiswa beserta semua relasi |
+| `cleanupRelasiBeforeChildDeletion()` | Cleanup relasi sebelum hapus child |
+
+### `lowongan.cpp`
+| Fungsi | Deskripsi |
+|--------|-----------|  
+| `createListParent()` | Inisialisasi list lowongan |
+| `alokasiParent()` | Alokasi node baru lowongan |
+| `insertParent()` | Insert lowongan ke list |
+| `findParent()` | Cari lowongan berdasarkan ID |
+| `menuCariLowongan()` | Menu interaktif pencarian lowongan |
+| `deleteParentByID()` | Hapus lowongan beserta semua lamaran |
+| `importLowonganFromAPI()` | Import lowongan dari file hasil API |
+
+### `lamaran.cpp`
+| Fungsi | Deskripsi |
+|--------|-----------|  
+| `insertRelasi()` | Insert lamaran baru (relasi Parent-Child) |
+| `editStatusDosen()` | Update status verifikasi dosen |
+| `editStatusPerusahaan()` | Update keputusan perusahaan |
+| `showStatusLamaranMahasiswa()` | Tampilkan status lamaran per mahasiswa |
+| `showRekapLamaranPerusahaan()` | Rekap lamaran dengan ATS Score |
+| `countNotifikasi()` | Hitung jumlah notifikasi penerimaan |
+| `showNotifikasi()` | Tampilkan detail notifikasi |
+
 ## 📊 Alur Program
 
 ```mermaid
 graph LR
     %% Setup Styling High Contrast
-    %% Fill: Background warna kotak
-    %% Stroke: Garis pinggir
-    %% Color: Warna Teks (PENTING: Hitam #000 biar terbaca di kotak terang)
-    
     classDef default fill:#ffffff,stroke:#333333,stroke-width:1px,color:#000000;
     classDef menu fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000000;
     classDef term fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000000;
     classDef auth fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000000;
+    classDef new fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000000;
 
     %% Main Flow
     Start([Start]) --> Init[Init Data] --> LoginStart{Login Menu}
@@ -93,7 +125,7 @@ graph LR
 
     Auth -- "Sukses" --> RoleCheck{Cek Role}
 
-    %% Role Branches (Stacked Vertically in LR mode)
+    %% Role Branches
     RoleCheck --> M_Menu
     RoleCheck --> D_Menu
     RoleCheck --> P_Menu
@@ -104,26 +136,35 @@ graph LR
         M_Menu --> M2[2. Lihat Lowongan]
         M_Menu --> M3[3. Ajukan Lamaran]
         M_Menu --> M4[4. Cek Status]
-        M_Menu --> M5[5. Notifikasi]
+        M_Menu --> M5[5. Cari Lowongan]:::new
+        M_Menu --> M6[6. Notifikasi]
     end
 
     subgraph R_D [Dosen]
         D_Menu[Menu Dosen] --> D1[1. Verifikasi]
         D_Menu --> D2[2. Lihat Lowongan]
         D_Menu --> D3[3. Rekap Mhs]
+        D_Menu --> D4[4. Cari Mhs]:::new
+        D_Menu --> D5[5. Hapus Mhs]:::new
     end
 
     subgraph R_P [Perusahaan]
         P_Menu[Menu Perusahaan] --> P1[1. Input Lowongan]
         P_Menu --> P2[2. Keputusan]
-        P_Menu --> P3[3. Rekap Masuk]
+        P_Menu --> P3[3. Rekap ATS]
         P_Menu --> P4[4. Cari API]
+        P_Menu --> P5[5. Cari Mhs]:::new
+        P_Menu --> P6[6. Hapus Lowongan]:::new
     end
 
     subgraph R_A [Admin]
         A_Menu[Menu Admin] --> A1[1. Kelola User]
-        A_Menu --> A2[2. Lihat Data]
+        A_Menu --> A2[2. Lihat Data M:N]
         A_Menu --> A3[3. Rekap Total]
+        A_Menu --> A4[4. Cari Mhs]:::new
+        A_Menu --> A5[5. Cari Lowongan]:::new
+        A_Menu --> A6[6. Hapus Mhs]:::new
+        A_Menu --> A7[7. Hapus Lowongan]:::new
     end
 
     %% Logout Routing
