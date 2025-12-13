@@ -43,7 +43,32 @@ address_parent findParent(ListParent L, int ID_Target) {
     return nullptr;
 }
 
-// Tambahkan di lowongan.cpp, di bawah findParent:
+void menuCariLowongan(ListParent L) {
+    int id_cari;
+
+    cout << "\n--- CARI LOWONGAN BERDASARKAN ID ---" << endl;
+    cout << "Masukkan ID Lowongan yang dicari: ";
+
+    if (!(cin >> id_cari)) {
+        cout << " Input ID tidak valid. Silakan masukkan angka." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+
+    // Panggil fungsi findParent
+    address_parent P_Found = findParent(L, id_cari);
+
+    if (P_Found != nullptr) {
+        cout << "   Ditemukan!" << endl;
+        cout << "   ID: " << P_Found->info.id_lowongan
+             << " | Posisi: " << P_Found->info.posisi
+             << " | Perusahaan: " << P_Found->info.nama_perusahaan
+             << " | IPK Min: " << fixed << setprecision(2) << P_Found->info.kuota << endl;
+    } else {
+        cout << "    Lowongan ID " << id_cari << " TIDAK Ditemukan." << endl;
+    }
+}
 
 void showLowongan(ListParent L_Parent) {
     address_parent P = L_Parent.first;
