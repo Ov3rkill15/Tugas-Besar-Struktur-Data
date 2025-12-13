@@ -39,6 +39,29 @@ address_child findChildByNIM(ListChild L, string NIM_Target) {
     return nullptr;
 }
 
+void menuCariMahasiswa(ListChild L) {
+    string nim_cari;
+
+    cout << "\n--- CARI MAHASISWA BERDASARKAN NIM ---" << endl;
+    cout << "Masukkan NIM Mahasiswa yang dicari: ";
+
+    // Penanganan input string (NIM)
+    // NOTE: Ini akan dipanggil setelah input integer di main, jadi perlu cin.ignore di main
+    getline(cin, nim_cari);
+
+    address_child C_Found = findChildByNIM(L, nim_cari);
+
+    if (C_Found != nullptr) {
+        cout << "   Ditemukan!" << endl;
+        cout << "   NIM: " << C_Found->info.nim
+             << " | Nama: " << C_Found->info.nama
+             << " | Angkatan: " << C_Found->info.angkatan << endl;
+    } else {
+        cout << "   Mahasiswa dengan NIM " << nim_cari << " TIDAK Ditemukan." << endl;
+    }
+}
+
+
 // Tambahkan di mahasiswa.cpp, di bawah handleInputMahasiswa:
 
 void showMahasiswa(ListChild L_Child) {
