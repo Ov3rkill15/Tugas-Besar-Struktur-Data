@@ -96,6 +96,53 @@ void menuInsertParent(ListParent &L, int &ID_Counter) {
     ID_Counter++; // Tambah counter untuk Lowongan berikutnya
 }
 
+void deleteParentByID(ListParent &L_Parent, int ID_Lowongan_Target) {
+    address_parent P_Before = nullptr;
+    address_parent P_Current = L_Parent.first;
+    bool target_found = false; // Flag pengganti break
+
+    // 1. CARI P_TARGET dan P_BEFORE
+    while (P_Current != nullptr && !target_found) {
+        if (P_Current->info.id_lowongan == ID_Lowongan_Target) {
+            target_found = true;
+        } else {
+            P_Before = P_Current;
+            P_Current = P_Current->next;
+        }
+    }
+
+    // A. Kasus 1: Lowongan tidak ditemukan
+    if (!target_found) {
+        cout << " Gagal menghapus. Lowongan ID " << ID_Lowongan_Target << " tidak ditemukan." << endl;
+        return;
+    }
+
+    // 2. HAPUS SEMUA NODE RELASI yang terikat pada P_Current (Integritas MLL)
+    // Walaupun ini ada di lowongan.cpp, ini adalah langkah penting MLL.
+    address_relasi R_Del = P_Current->first_relasi;
+    while (R_Del != nullptr) {
+        address_relasi R_Next = R_Del->next;
+        delete R_Del; // Dealokasi Node Relasi
+        R_Del = R_Next;
+    }
+
+    // 3. HAPUS NODE PARENT (P_Current)
+    if (P_Current == L_Parent.first) {
+        // Kasus 2: Menghapus Node Pertama
+        L_Parent.first = P_Current->next;
+    } else {
+        // Kasus 3: Menghapus Node Tengah/Akhir
+        if (P_Before != nullptr) {
+            P_Before->next = P_Current->next;
+        }
+    }
+
+    // 4. Dealokasi Node Parent
+    cout << "Lowongan ID " << ID_Lowongan_Target << " berhasil dihapus beserta semua Lamaran terkait." << endl;
+    delete P_Current;
+}
+
+
 // --- FITUR API SEARCH ---
 void importLowonganFromAPI(ListParent &L, string filePath) {
     ifstream file(filePath);
