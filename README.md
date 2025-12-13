@@ -76,49 +76,53 @@ Sistem ini menggunakan **Multi-Linked List Tipe B**, di mana setiap Parent node 
 
 ```mermaid
 graph TB
-    subgraph ListParent ["List Parent (Lowongan)"]
-        P1["P1<br/>Data Scientist<br/>TechCorp"]
-        P2["P2<br/>Mobile Dev<br/>GameDev"]
-        P3["P3<br/>Backend Eng<br/>ServerX"]
+    subgraph ListParent ["List Lowongan"]
+        P1["ID: 101<br/>Data Scientist<br/>TechCorp"]
+        P2["ID: 102<br/>Mobile Dev<br/>GameDev Studio"]
+        P3["ID: 103<br/>Backend Eng<br/>ServerX"]
         P1 -->|next| P2 -->|next| P3
     end
 
-    subgraph ListChild ["List Child (Mahasiswa)"]
-        C1["C1<br/>103032400104<br/>Alwan"]
-        C2["C2<br/>103032400105<br/>Fathur"]
-        C3["C3<br/>103032400106<br/>Azriel"]
-        C1 -->|next| C2 -->|next| C3
+    subgraph ListChild ["List Mahasiswa"]
+        C1["10303240104<br/>Alwan Suryadi"]
+        C2["10303240035<br/>Fathur Alfarizi"]
+        C3["10303240010<br/>Azriel Hartoto"]
+        C4["10303240001<br/>Nathasya"]
+        C5["10303240006<br/>Theodore"]
+        C1 -->|next| C2 -->|next| C3 -->|next| C4 -->|next| C5
     end
 
-    subgraph Relasi1 ["Relasi P1"]
-        R1["R1<br/>Lamaran #1"]
-        R2["R2<br/>Lamaran #2"]
+    subgraph Relasi1 ["Lamaran di TechCorp"]
+        R1["ID: 1<br/>Alwan<br/>Score: 70"]
+        R2["ID: 2<br/>Fathur<br/>DITERIMA!"]
         R1 -->|next| R2
     end
 
-    subgraph Relasi2 ["Relasi P2"]
-        R3["R3<br/>Lamaran #3"]
+    subgraph Relasi2 ["Lamaran di GameDev"]
+        R3["ID: 3<br/>Azriel<br/>Menunggu"]
     end
 
-    %% Parent to Relasi (first_relasi pointer)
+    %% Pointer first_relasi
     P1 -.->|first_relasi| R1
     P2 -.->|first_relasi| R3
-    P3 -.->|first_relasi| NULL1((null))
+    P3 -.->|first_relasi| NULL1((kosong))
 
-    %% Relasi to Child (ptr_child pointer)
+    %% Pointer ptr_child
     R1 ==>|ptr_child| C1
     R2 ==>|ptr_child| C2
-    R3 ==>|ptr_child| C1
+    R3 ==>|ptr_child| C3
 
     %% Styling
     classDef parent fill:#4fc3f7,stroke:#0288d1,color:#000
     classDef child fill:#81c784,stroke:#388e3c,color:#000
     classDef relasi fill:#ffb74d,stroke:#f57c00,color:#000
     classDef null fill:#e0e0e0,stroke:#9e9e9e,color:#666
+    classDef accepted fill:#66bb6a,stroke:#2e7d32,color:#fff
 
     class P1,P2,P3 parent
-    class C1,C2,C3 child
-    class R1,R2,R3 relasi
+    class C1,C2,C3,C4,C5 child
+    class R1,R3 relasi
+    class R2 accepted
     class NULL1 null
 ```
 
@@ -158,12 +162,20 @@ graph TB
 ### `lamaran.cpp`
 | Fungsi | Deskripsi |
 |--------|-----------|  
-| `insertRelasi()` | Insert lamaran baru (relasi Parent-Child) |
+| `insertRelasi()` | Insert lamaran baru |
+| `deleteRelasi()` | Hapus/batalkan lamaran by ID |
+| `findRelasi()` | Cek relasi Lowongan-Mahasiswa |
 | `editStatusDosen()` | Update status verifikasi dosen |
 | `editStatusPerusahaan()` | Update keputusan perusahaan |
+| `editRelasi()` | Ganti mahasiswa di lamaran |
 | `showStatusLamaranMahasiswa()` | Tampilkan status lamaran per mahasiswa |
+| `showAllChildWithParent()` | Tampilkan semua mahasiswa + lowongan |
 | `showRekapLamaranPerusahaan()` | Rekap lamaran dengan ATS Score |
-| `countNotifikasi()` | Hitung jumlah notifikasi penerimaan |
+| `countChildPerParent()` | Hitung pelamar per lowongan |
+| `countParentPerChild()` | Hitung lowongan per mahasiswa |
+| `countChildWithoutRelasi()` | Hitung mahasiswa belum melamar |
+| `countParentWithoutRelasi()` | Hitung lowongan tanpa pelamar |
+| `countNotifikasi()` | Hitung jumlah notifikasi |
 | `showNotifikasi()` | Tampilkan detail notifikasi |
 
 ## 📊 Alur Program
@@ -200,7 +212,8 @@ graph LR
         M_Menu --> M3[3. Ajukan Lamaran]
         M_Menu --> M4[4. Cek Status]
         M_Menu --> M5[5. Cari Lowongan]:::new
-        M_Menu --> M6[6. Notifikasi]
+        M_Menu --> M6[6. Batalkan Lamaran]:::new
+        M_Menu --> M7[7. Notifikasi]
     end
 
     subgraph R_D [Dosen]
@@ -209,6 +222,10 @@ graph LR
         D_Menu --> D3[3. Rekap Mhs]
         D_Menu --> D4[4. Cari Mhs]:::new
         D_Menu --> D5[5. Hapus Mhs]:::new
+        D_Menu --> D6[6. Cek Relasi]:::new
+        D_Menu --> D7[7. Semua Mhs+Lwg]:::new
+        D_Menu --> D8[8. Hitung Lwg/Mhs]:::new
+        D_Menu --> D9[9. Mhs Blm Lamar]:::new
     end
 
     subgraph R_P [Perusahaan]
@@ -217,17 +234,23 @@ graph LR
         P_Menu --> P3[3. Rekap ATS]
         P_Menu --> P4[4. Cari API]
         P_Menu --> P5[5. Cari Mhs]:::new
-        P_Menu --> P6[6. Hapus Lowongan]:::new
+        P_Menu --> P6[6. Hapus Lwg]:::new
+        P_Menu --> P7[7. Cek Relasi]:::new
+        P_Menu --> P8[8. Hitung Pelamar]:::new
+        P_Menu --> P9[9. Lwg Kosong]:::new
     end
 
     subgraph R_A [Admin]
         A_Menu[Menu Admin] --> A1[1. Kelola User]
-        A_Menu --> A2[2. Lihat Data M:N]
-        A_Menu --> A3[3. Rekap Total]
-        A_Menu --> A4[4. Cari Mhs]:::new
-        A_Menu --> A5[5. Cari Lowongan]:::new
-        A_Menu --> A6[6. Hapus Mhs]:::new
-        A_Menu --> A7[7. Hapus Lowongan]:::new
+        A_Menu --> A2[2. Lihat M:N]
+        A_Menu --> A3[3. Rekap]
+        A_Menu --> A4[4-5. Cari Mhs/Lwg]:::new
+        A_Menu --> A5[6-7. Hapus Mhs/Lwg]:::new
+        A_Menu --> A6[8. Hapus Lamaran]:::new
+        A_Menu --> A7[9. Cek Relasi]:::new
+        A_Menu --> A8[10. Semua Mhs+Lwg]:::new
+        A_Menu --> A9[11. Statistik]:::new
+        A_Menu --> A10[12. Edit Relasi]:::new
     end
 
     %% Logout Routing

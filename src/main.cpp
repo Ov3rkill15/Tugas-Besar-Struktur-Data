@@ -85,6 +85,75 @@ int main() {
     createListParent(L_Parent);
     createListChild(L_Child);
 
+    // --- MOCK DATA UNTUK TESTING ---
+    // Data Lowongan (3 lowongan) - format: ID, Posisi, Perusahaan, Kuota
+    insertParent(L_Parent, alokasiParent(101, "Data Scientist", "TechCorp", 5));
+    insertParent(L_Parent, alokasiParent(102, "Mobile Developer", "GameDev Studio", 3));
+    insertParent(L_Parent, alokasiParent(103, "Backend Engineer", "ServerX", 2));
+    
+    // Data Mahasiswa - dari data kelas (login.cpp)
+    insertChild(L_Child, alokasiChild("1030324" "0104", "Muhamad Alwan Suryadi", 2024));
+    insertChild(L_Child, alokasiChild("1030324" "0035", "Fathurrahman Alfarizi", 2024));
+    insertChild(L_Child, alokasiChild("1030324" "0010", "Azriel Raihan Eldova Hartoto", 2024));
+    insertChild(L_Child, alokasiChild("1030324" "0001", "Nathasya Yuan Maharani", 2024));
+    insertChild(L_Child, alokasiChild("1030324" "0006", "Theodore Elvis Estrada", 2024));
+    
+    // Data Lamaran (relasi) - manual karena butuh struktur khusus
+    // Lamaran 1: Alwan -> TechCorp (Data Scientist)
+    address_parent P1 = findParent(L_Parent, 101);
+    address_child C1 = findChildByNIM(L_Child, "10303240104");
+    if (P1 && C1) {
+        address_relasi R1 = new NodeRelasi;
+        R1->info.id_lamaran = 1;
+        R1->info.status_dosen = 1;  // Disetujui dosen
+        R1->info.status_perusahaan = 0; // Menunggu
+        R1->info.cv_path = "mock_cv_alwan.pdf";
+        R1->info.cv_score = 70;
+        R1->ptr_parent = P1;
+        R1->ptr_child = C1;
+        R1->next = nullptr;
+        P1->first_relasi = R1;
+    }
+    
+    // Lamaran 2: Fathur -> TechCorp (Data Scientist)
+    address_child C2 = findChildByNIM(L_Child, "10303240035");
+    if (P1 && C2) {
+        address_relasi R2 = new NodeRelasi;
+        R2->info.id_lamaran = 2;
+        R2->info.status_dosen = 1;
+        R2->info.status_perusahaan = 1; // Diterima!
+        R2->info.cv_path = "mock_cv_fathur.pdf";
+        R2->info.cv_score = 85;
+        R2->ptr_parent = P1;
+        R2->ptr_child = C2;
+        R2->next = nullptr;
+        // Insert after R1
+        if (P1->first_relasi) {
+            address_relasi lastR = P1->first_relasi;
+            while (lastR->next) lastR = lastR->next;
+            lastR->next = R2;
+        }
+    }
+    
+    // Lamaran 3: Azriel -> GameDev (Mobile Dev)
+    address_parent P2 = findParent(L_Parent, 102);
+    address_child C3 = findChildByNIM(L_Child, "10303240010");
+    if (P2 && C3) {
+        address_relasi R3 = new NodeRelasi;
+        R3->info.id_lamaran = 3;
+        R3->info.status_dosen = 0; // Menunggu
+        R3->info.status_perusahaan = 0;
+        R3->info.cv_path = "mock_cv_azriel.pdf";
+        R3->info.cv_score = 60;
+        R3->ptr_parent = P2;
+        R3->ptr_child = C3;
+        R3->next = nullptr;
+        P2->first_relasi = R3;
+    }
+    
+    cout << "\033[32m[MOCK DATA] 3 Lowongan, 5 Mahasiswa, 3 Lamaran berhasil dimuat!\033[0m" << endl;
+    // --- END MOCK DATA ---
+
     // --- LOGIN SYSTEM INTEGRATION ---
     initUsers(); // Initialize hardcoded users
     
@@ -92,7 +161,7 @@ int main() {
     system("mkdir uploads 2> NUL");
 
     int counter_lowongan = 107; // Start after hardcoded ones
-    int counter_lamaran = 1;
+    int counter_lamaran = 4; // Start after mock data
 
     while (true) { // Outer loop for Login/Logout
         string activeUser, activeRole;
@@ -156,7 +225,8 @@ int main() {
                     cout << "| [3] " << char(175) << " Ajukan Lamaran (Upload CV)   |" << endl;
                     cout << "| [4] " << char(175) << " Cek Status Lamaran           |" << endl;
                     cout << "| [5] " << char(175) << " Cari Lowongan (by ID)        |" << endl;
-                    cout << "| [6] " << char(175) << " Pesan (" << notifCount << ")                      |" << endl;
+                    cout << "| [6] " << char(175) << " Batalkan Lamaran             |" << endl;
+                    cout << "| [7] " << char(175) << " Pesan (" << notifCount << ")                      |" << endl;
                     cout << "\033[31m"; // Red
                     cout << "| [0] " << char(174) << " Keluar (Logout)              |" << endl;
                     cout << "\033[0m";
@@ -168,6 +238,10 @@ int main() {
                     cout << "| [3] " << char(175) << " Rekap Lamaran Mahasiswa      |" << endl;
                     cout << "| [4] " << char(175) << " Cari Mahasiswa (by NIM)      |" << endl;
                     cout << "| [5] " << char(175) << " Hapus Mahasiswa (by NIM)     |" << endl;
+                    cout << "| [6] " << char(175) << " Cek Relasi Lowongan-Mhs      |" << endl;
+                    cout << "| [7] " << char(175) << " Lihat Semua Mhs + Lowongan   |" << endl;
+                    cout << "| [8] " << char(175) << " Hitung Lowongan per Mhs      |" << endl;
+                    cout << "| [9] " << char(175) << " Mhs Belum Melamar            |" << endl;
                     cout << "\033[31m";
                     cout << "| [0] " << char(174) << " Keluar (Logout)              |" << endl;
                     cout << "\033[0m";
@@ -180,6 +254,9 @@ int main() {
                     cout << "| [4] " << char(175) << " Cari Lowongan Online (API)   |" << endl;
                     cout << "| [5] " << char(175) << " Cari Mahasiswa (by NIM)      |" << endl;
                     cout << "| [6] " << char(175) << " Hapus Lowongan (by ID)       |" << endl;
+                    cout << "| [7] " << char(175) << " Cek Relasi Lowongan-Mhs      |" << endl;
+                    cout << "| [8] " << char(175) << " Hitung Pelamar per Lowongan  |" << endl;
+                    cout << "| [9] " << char(175) << " Lowongan Tanpa Pelamar       |" << endl;
                     cout << "\033[31m";
                     cout << "| [0] " << char(174) << " Keluar (Logout)              |" << endl;
                     cout << "\033[0m";
@@ -193,6 +270,11 @@ int main() {
                     cout << "| [5] " << char(175) << " Cari Lowongan (by ID)        |" << endl;
                     cout << "| [6] " << char(175) << " Hapus Mahasiswa (by NIM)     |" << endl;
                     cout << "| [7] " << char(175) << " Hapus Lowongan (by ID)       |" << endl;
+                    cout << "| [8] " << char(175) << " Batalkan/Hapus Lamaran       |" << endl;
+                    cout << "| [9] " << char(175) << " Cek Relasi Lowongan-Mhs      |" << endl;
+                    cout << "| [10]" << char(175) << " Lihat Semua Mhs + Lowongan   |" << endl;
+                    cout << "| [11]" << char(175) << " Statistik Lengkap            |" << endl;
+                    cout << "| [12]" << char(175) << " Edit Relasi                  |" << endl;
                     cout << "\033[31m";
                     cout << "| [0] " << char(174) << " Keluar (Logout)              |" << endl;
                     cout << "\033[0m";
@@ -313,7 +395,14 @@ int main() {
                             menuCariLowongan(L_Parent);
                             break;
                         }
-                        case 6: { // Pesan / Notifikasi
+                        case 6: { // Batalkan Lamaran
+                            int id_batal;
+                            cout << "Masukkan ID Lamaran yang ingin dibatalkan: ";
+                            cin >> id_batal;
+                            deleteRelasi(L_Parent, id_batal);
+                            break;
+                        }
+                        case 7: { // Pesan / Notifikasi
                             if (currentNIM.empty()) {
                                 cout << "Silakan 'Input Data Diri' terlebih dahulu agar sistem mengenali NIM Anda." << endl;
                             } else {
@@ -355,6 +444,32 @@ int main() {
                             cout << "Masukkan NIM Mahasiswa yang akan dihapus: ";
                             getline(cin, nim_hapus);
                             deleteChildByNIM(L_Child, L_Parent, nim_hapus);
+                            break;
+                        }
+                        case 6: { // Cek Relasi Parent-Child
+                            int id_low;
+                            string nim_cek;
+                            cout << "Masukkan ID Lowongan: "; cin >> id_low;
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "Masukkan NIM Mahasiswa: "; getline(cin, nim_cek);
+                            findRelasi(L_Parent, id_low, nim_cek);
+                            break;
+                        }
+                        case 7: { // Lihat Semua Mhs + Lowongan
+                            showAllChildWithParent(L_Parent, L_Child);
+                            system("pause");
+                            break;
+                        }
+                        case 8: { // Hitung Lowongan per Mhs
+                            string nim_count;
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "Masukkan NIM Mahasiswa: "; getline(cin, nim_count);
+                            countParentPerChild(L_Parent, nim_count);
+                            break;
+                        }
+                        case 9: { // Mhs Belum Melamar
+                            countChildWithoutRelasi(L_Parent, L_Child);
+                            system("pause");
                             break;
                         }
                         default: cout << "Pilihan tidak valid." << endl;
@@ -406,6 +521,26 @@ int main() {
                             deleteParentByID(L_Parent, id_hapus);
                             break;
                         }
+                        case 7: { // Cek Relasi Parent-Child
+                            int id_low;
+                            string nim_cek;
+                            cout << "Masukkan ID Lowongan: "; cin >> id_low;
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "Masukkan NIM Mahasiswa: "; getline(cin, nim_cek);
+                            findRelasi(L_Parent, id_low, nim_cek);
+                            break;
+                        }
+                        case 8: { // Hitung Pelamar per Lowongan
+                            int id_count;
+                            cout << "Masukkan ID Lowongan: "; cin >> id_count;
+                            countChildPerParent(L_Parent, id_count);
+                            break;
+                        }
+                        case 9: { // Lowongan Tanpa Pelamar
+                            countParentWithoutRelasi(L_Parent);
+                            system("pause");
+                            break;
+                        }
                         default: cout << "Pilihan tidak valid." << endl;
                     }
                     break;
@@ -447,6 +582,55 @@ int main() {
                             cout << "Masukkan ID Lowongan yang akan dihapus: ";
                             cin >> id_hapus;
                             deleteParentByID(L_Parent, id_hapus);
+                            break;
+                        }
+                        case 8: { // Batalkan/Hapus Lamaran
+                            int id_batal;
+                            cout << "Masukkan ID Lamaran yang ingin dihapus: ";
+                            cin >> id_batal;
+                            deleteRelasi(L_Parent, id_batal);
+                            break;
+                        }
+                        case 9: { // Cek Relasi Parent-Child
+                            int id_low;
+                            string nim_cek;
+                            cout << "Masukkan ID Lowongan: "; cin >> id_low;
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "Masukkan NIM Mahasiswa: "; getline(cin, nim_cek);
+                            findRelasi(L_Parent, id_low, nim_cek);
+                            break;
+                        }
+                        case 10: { // Lihat Semua Mhs + Lowongan
+                            showAllChildWithParent(L_Parent, L_Child);
+                            system("pause");
+                            break;
+                        }
+                        case 11: { // Statistik Lengkap
+                            cout << "\n=== STATISTIK LENGKAP ===" << endl;
+                            cout << "\n[Pelamar per Lowongan]" << endl;
+                            address_parent P = L_Parent.first;
+                            while (P != nullptr) {
+                                countChildPerParent(L_Parent, P->info.id_lowongan);
+                                P = P->next;
+                            }
+                            cout << "\n[Lowongan per Mahasiswa]" << endl;
+                            address_child C = L_Child.first;
+                            while (C != nullptr) {
+                                countParentPerChild(L_Parent, C->info.nim);
+                                C = C->next;
+                            }
+                            cout << "\n[Mahasiswa Belum Melamar]" << endl;
+                            countChildWithoutRelasi(L_Parent, L_Child);
+                            cout << "\n[Lowongan Tanpa Pelamar]" << endl;
+                            countParentWithoutRelasi(L_Parent);
+                            system("pause");
+                            break;
+                        }
+                        case 12: { // Edit Relasi
+                            int id_edit;
+                            cout << "Masukkan ID Lamaran yang ingin diedit: ";
+                            cin >> id_edit;
+                            editRelasi(L_Parent, L_Child, id_edit);
                             break;
                         }
                         default: cout << "Pilihan tidak valid." << endl;
