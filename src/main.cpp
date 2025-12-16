@@ -84,10 +84,10 @@ int main() {
     createListChild(L_Child);
 
     // --- MOCK DATA UNTUK TESTING ---
-    // Data Lowongan (3 lowongan) - format: ID, Posisi, Perusahaan, Kuota
-    insertParent(L_Parent, alokasiParent(101, "Data Scientist", "TechCorp", 5));
-    insertParent(L_Parent, alokasiParent(102, "Mobile Developer", "GameDev Studio", 3));
-    insertParent(L_Parent, alokasiParent(103, "Backend Engineer", "ServerX", 2));
+    // Data Lowongan (3 lowongan) - format: ID, Posisi, Perusahaan, IPK Minimum, Kuota
+    insertParent(L_Parent, alokasiParent(101, "Data Scientist", "TechCorp", 3.25, 5));
+    insertParent(L_Parent, alokasiParent(102, "Mobile Developer", "GameDev Studio", 3.00, 3));
+    insertParent(L_Parent, alokasiParent(103, "Backend Engineer", "ServerX", 2.75, 4));
     
     // Data Mahasiswa - dari data kelas (login.cpp)
     insertChild(L_Child, alokasiChild("103032400104", "Muhamad Alwan Suryadi", 2024));
@@ -213,18 +213,27 @@ int main() {
         cout << "Selamat Datang, " << activeUser << " (" << activeRole << ")" << endl;
 
         // Tambahkan beberapa data awal Lowongan (Parent) untuk pengujian Relasi
-        // Hardcoded 5+ vacancies as requested
+        // Hardcoded 6 vacancies (sudah diinisiasi di awal main, ini backup jika kosong)
         if (L_Parent.first == nullptr) { 
-             insertParent(L_Parent, alokasiParent(101, "Data Scientist", "TechCorp", 3.5));
-             insertParent(L_Parent, alokasiParent(102, "Mobile Developer", "GameDev", 3.0));
-             insertParent(L_Parent, alokasiParent(103, "Backend Engineer", "ServerX", 3.2));
-             insertParent(L_Parent, alokasiParent(104, "UI/UX Designer", "CreativeStudio", 3.0));
-             insertParent(L_Parent, alokasiParent(105, "DevOps Engineer", "CloudSys", 3.5));
-             insertParent(L_Parent, alokasiParent(106, "Product Manager", "StartUpInc", 3.0));
+             insertParent(L_Parent, alokasiParent(101, "Data Scientist", "TechCorp", 3.50, 5));
+             insertParent(L_Parent, alokasiParent(102, "Mobile Developer", "GameDev", 3.00, 3));
+             insertParent(L_Parent, alokasiParent(103, "Backend Engineer", "ServerX", 3.20, 4));
+             insertParent(L_Parent, alokasiParent(104, "UI/UX Designer", "CreativeStudio", 3.00, 2));
+             insertParent(L_Parent, alokasiParent(105, "DevOps Engineer", "CloudSys", 3.50, 3));
+             insertParent(L_Parent, alokasiParent(106, "Product Manager", "StartUpInc", 3.00, 2));
         }
         
         // Gunakan activeNIM langsung untuk mahasiswa (tidak perlu cari manual lagi)
         string currentNIM = activeNIM;
+        
+        // AUTO-REGISTER: Jika mahasiswa dengan NIM ini belum ada di L_Child, tambahkan otomatis
+        if (activeRole == "mahasiswa" && !currentNIM.empty()) {
+            if (findChildByNIM(L_Child, currentNIM) == nullptr) {
+                insertChild(L_Child, alokasiChild(currentNIM, activeUser, 2024));
+                cout << "\033[32m[AUTO] Data mahasiswa otomatis ditambahkan ke sistem.\033[0m" << endl;
+                Loading(1000);
+            }
+        }
         
         while (true) {
             int notifCount = 0;
@@ -243,13 +252,12 @@ int main() {
             switch (getRoleEnum(activeRole)) {
                 case ROLE_MAHASISWA:
                     cout << "\033[33m"; // Yellow
-                    cout << "| [1] " << char(175) << " Input Data Diri              |" << endl;
-                    cout << "| [2] " << char(175) << " Lihat Daftar Lowongan        |" << endl;
-                    cout << "| [3] " << char(175) << " Ajukan Lamaran (Upload CV)   |" << endl;
-                    cout << "| [4] " << char(175) << " Cek Status Lamaran           |" << endl;
-                    cout << "| [5] " << char(175) << " Cari Lowongan (by ID)        |" << endl;
-                    cout << "| [6] " << char(175) << " Batalkan Lamaran             |" << endl;
-                    cout << "| [7] " << char(175) << " Pesan (" << notifCount << ")                    |" << endl;
+                    cout << "| [1] " << char(175) << " Lihat Daftar Lowongan        |" << endl;
+                    cout << "| [2] " << char(175) << " Ajukan Lamaran (Upload CV)   |" << endl;
+                    cout << "| [3] " << char(175) << " Cek Status Lamaran           |" << endl;
+                    cout << "| [4] " << char(175) << " Cari Lowongan (by ID)        |" << endl;
+                    cout << "| [5] " << char(175) << " Batalkan Lamaran             |" << endl;
+                    cout << "| [6] " << char(175) << " Pesan (" << notifCount << ")                    |" << endl;
                     cout << "\033[31m"; // Red
                     cout << "| [0] " << char(174) << " Keluar (Logout)              |" << endl;
                     cout << "\033[0m";
@@ -341,41 +349,13 @@ int main() {
                     // currentNIM sudah didapat dari login (activeNIM), tidak perlu cari lagi
                     
                     switch (pilihan_menu_utama) {
-                        case 1: { // Input Data Diri (Menu ini tetap meminta NIM manual)
-                            int pilihan_sub;
-                            do {
-                                string nim_input;
-                                char nama_input[100];
-                                int angkatan_input;
-                                cout << "\n--- INPUT DATA DIRI ---" << endl;
-                                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                                cout << "Masukkan NIM: "; getline(cin, nim_input);
-                                cout << "Nama Lengkap (Otomatis): " << activeUser << endl;
-                                strcpy(nama_input, activeUser.c_str()); 
-                                
-                                cout << "Masukkan Angkatan (Tahun): ";
-                                if (!(cin >> angkatan_input)) {
-                                    cout << "Input Angkatan tidak valid." << endl;
-                                    cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                                    pilihan_sub = 1; continue;
-                                }
-                                if (findChildByNIM(L_Child, nim_input) != nullptr) {
-                                    cout << "Data Mahasiswa sudah ada." << endl;
-                                } else {
-                                    insertChild(L_Child, alokasiChild(nim_input, nama_input, angkatan_input));
-                                    cout << "Data berhasil disimpan." << endl;
-                                }
-                                cout << "1. Input Lagi, 2. Kembali: "; cin >> pilihan_sub;
-                            } while (pilihan_sub == 1);
-                            break;
-                        }
-                        case 2: { // Lihat Daftar Lowongan
+                        case 1: { // Lihat Daftar Lowongan
                             showLowongan(L_Parent);
                             break;
                         }
-                        case 3: { // Ajukan Lamaran + CV (PDF Picker)
+                        case 2: { // Ajukan Lamaran + CV (PDF Picker)
                             if (currentNIM.empty()) {
-                                cout << "Silakan 'Input Data Diri' terlebih dahulu agar sistem mengenali NIM Anda." << endl;
+                                cout << "NIM tidak ditemukan. Pastikan Anda login dengan akun yang memiliki NIM." << endl;
                                 break;
                             }
                             
@@ -400,9 +380,9 @@ int main() {
                             insertRelasi(L_Parent, L_Child, id_lowongan_input, currentNIM, activeUser, counter_lamaran++, cv_path);
                             break;
                         }
-                        case 4: { // Status Lamaran - OTOMATIS, tidak perlu input NIM
+                        case 3: { // Status Lamaran - OTOMATIS
                             if (currentNIM.empty()) {
-                                cout << "Silakan 'Input Data Diri' terlebih dahulu agar sistem mengenali NIM Anda." << endl;
+                                cout << "NIM tidak ditemukan. Pastikan Anda login dengan akun yang memiliki NIM." << endl;
                                 break;
                             }
                             cout << "\n--- STATUS LAMARAN ---" << endl;
@@ -410,14 +390,14 @@ int main() {
                             showStatusLamaranMahasiswa(L_Parent, currentNIM);
                             break;
                         }
-                        case 5: { // Cari Lowongan (by ID)
+                        case 4: { // Cari Lowongan (by ID)
                             cin.ignore(numeric_limits<streamsize>::max(), '\n');
                             menuCariLowongan(L_Parent);
                             break;
                         }
-                        case 6: { // Batalkan Lamaran
+                        case 5: { // Batalkan Lamaran
                             if (currentNIM.empty()) {
-                                cout << "Silakan 'Input Data Diri' terlebih dahulu agar sistem mengenali NIM Anda." << endl;
+                                cout << "NIM tidak ditemukan. Pastikan Anda login dengan akun yang memiliki NIM." << endl;
                                 break;
                             }
                             
@@ -437,9 +417,9 @@ int main() {
                             deleteRelasiMahasiswa(L_Parent, id_batal, currentNIM);
                             break;
                         }
-                        case 7: { // Pesan / Notifikasi
+                        case 6: { // Pesan / Notifikasi
                             if (currentNIM.empty()) {
-                                cout << "Silakan 'Input Data Diri' terlebih dahulu agar sistem mengenali NIM Anda." << endl;
+                                cout << "NIM tidak ditemukan. Pastikan Anda login dengan akun yang memiliki NIM." << endl;
                             } else {
                                 showNotifikasi(L_Parent, currentNIM);
                             }

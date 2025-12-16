@@ -2,7 +2,7 @@
 #define LOWONGAN_H
 #include "mll_structs.h" // <-- PENTING! Agar ListParent dikenali
 void createListParent(ListParent &L);
-address_parent alokasiParent(int ID, string Posisi, string Perusahaan, float Kuota);
+address_parent alokasiParent(int ID, string Posisi, string Perusahaan, float IpkMin, int Kuota);
 void insertParent(ListParent &L, address_parent P_Baru);
 address_parent findParent(ListParent L, int ID_Target);
 void menuCariLowongan(ListParent L);

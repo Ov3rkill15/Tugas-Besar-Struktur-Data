@@ -14,12 +14,13 @@ void createListParent(ListParent &L) {
     L.first = nullptr;
 }
 
-address_parent alokasiParent(int ID, string Posisi, string Perusahaan, float Kuota) {
+address_parent alokasiParent(int ID, string Posisi, string Perusahaan, float IpkMin, int Kuota) {
     address_parent P = new NodeParent;
     if (P != nullptr) {
         P->info.id_lowongan = ID;
         P->info.posisi = Posisi;
         P->info.nama_perusahaan = Perusahaan;
+        P->info.ipk_min = IpkMin;
         P->info.kuota = Kuota;
         P->next = nullptr;
         P->first_relasi = nullptr;
@@ -93,7 +94,7 @@ void showLowongan(ListParent L_Parent) {
         cout << "\033[36m+--------------------------------------------+\033[0m" << endl;
         cout << "| \033[92m[ID: " << P->info.id_lowongan << "]\033[0m " << P->info.posisi << endl;
         cout << "|   @ \033[95m" << P->info.nama_perusahaan << "\033[0m" << endl;
-        cout << "|   IPK Min: \033[93m" << fixed << setprecision(2) << P->info.kuota << "\033[0m" << endl;
+        cout << "|   IPK Min: \033[93m" << fixed << setprecision(2) << P->info.ipk_min << "\033[0m | Kuota: \033[92m" << P->info.kuota << "\033[0m posisi" << endl;
         P = P->next;
     }
     cout << "\033[36m+============================================+\033[0m" << endl;
@@ -104,33 +105,48 @@ void showLowongan(ListParent L_Parent) {
 void menuInsertParent(ListParent &L, int &ID_Counter) {
     char posisi_input[50];
     char perusahaan_input[100];
-    float kuota_input;
+    float ipk_min_input;
+    int kuota_input;
     int id_baru;
 
-    cout << "\n--- INPUT LOWONGAN BARU ---" << endl;
+    cout << "\n\033[36m+============================================+\033[0m" << endl;
+    cout << "|         \033[33mINPUT LOWONGAN BARU\033[0m               |" << endl;
+    cout << "\033[36m+============================================+\033[0m" << endl;
 
     id_baru = ID_Counter;
-    cout << "ID Lowongan Otomatis: " << id_baru << endl;
+    cout << "| ID Lowongan Otomatis: \033[92m" << id_baru << "\033[0m" << endl;
+    cout << "\033[36m+--------------------------------------------+\033[0m" << endl;
 
-    cout << "Masukkan Posisi/Role: ";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Membersihkan buffer sebelum getline
+    cout << "| Posisi/Role: ";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.getline(posisi_input, 50);
 
-    cout << "Masukkan Nama Perusahaan: ";
+    cout << "| Nama Perusahaan: ";
     cin.getline(perusahaan_input, 100);
 
-    cout << "Masukkan Syarat IPK Minimum (Contoh: 3.00): ";
-    if (!(cin >> kuota_input)) {
-        cout << "Input IPK tidak valid. Lowongan dibatalkan." << endl;
+    cout << "| IPK Minimum (0.00-4.00): ";
+    if (!(cin >> ipk_min_input) || ipk_min_input < 0 || ipk_min_input > 4) {
+        cout << "\033[91m| [ERROR] IPK tidak valid (harus 0.00-4.00).\033[0m" << endl;
+        cout << "\033[36m+============================================+\033[0m" << endl;
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         return;
     }
 
-    address_parent P_Baru = alokasiParent(id_baru, posisi_input, perusahaan_input, kuota_input);
+    cout << "| Kuota Posisi: ";
+    if (!(cin >> kuota_input) || kuota_input < 1) {
+        cout << "\033[91m| [ERROR] Kuota tidak valid (minimal 1).\033[0m" << endl;
+        cout << "\033[36m+============================================+\033[0m" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+
+    address_parent P_Baru = alokasiParent(id_baru, posisi_input, perusahaan_input, ipk_min_input, kuota_input);
     insertParent(L, P_Baru);
 
-    ID_Counter++; // Tambah counter untuk Lowongan berikutnya
+    cout << "\033[36m+============================================+\033[0m" << endl;
+    ID_Counter++;
 }
 
 void deleteParentByID(ListParent &L_Parent, int ID_Lowongan_Target) {
@@ -215,12 +231,16 @@ void importLowonganFromAPI(ListParent &L, string filePath) {
     cin >> choice;
 
     if (choice > 0 && choice <= count) {
-        int newID = 200 + rand() % 1000; 
-        while (findParent(L, newID) != nullptr) {
-            newID = 200 + rand() % 1000;
+        // Generate sequential ID
+        int maxID = 100;
+        address_parent P = L.first;
+        while (P != nullptr) {
+            if (P->info.id_lowongan > maxID) maxID = P->info.id_lowongan;
+            P = P->next;
         }
+        int newID = maxID + 1;
 
-        insertParent(L, alokasiParent(newID, jobs[choice-1].title, jobs[choice-1].company, jobs[choice-1].gpa));
+        insertParent(L, alokasiParent(newID, jobs[choice-1].title, jobs[choice-1].company, jobs[choice-1].gpa, 5)); // Default kuota = 5
         cout << "Lowongan berhasil ditambahkan dengan ID " << newID << "!" << endl;
     } else {
         cout << "Dibatalkan." << endl;
@@ -254,6 +274,7 @@ void searchJobsOnline(ListParent &L, string keyword) {
         string title;
         string company;
         double gpa;
+        int kuota;
     } results[10];
     
     cout << "| \033[95mDitemukan " << numResults << " lowongan:\033[0m" << endl;
@@ -265,10 +286,11 @@ void searchJobsOnline(ListParent &L, string keyword) {
         string suffix = suffixes[rand() % numSuffixes];
         results[i].title = prefix + " " + keyword + " " + suffix;
         results[i].company = companies[rand() % numCompanies];
-        results[i].gpa = 2.5 + (rand() % 14) / 10.0; // GPA 2.5 - 3.8
+        results[i].gpa = 2.5 + (rand() % 16) / 10.0; // GPA 2.5 - 4.0
+        results[i].kuota = 2 + rand() % 8; // Kuota 2-9
         
         cout << "| \033[92m[" << (i + 1) << "]\033[0m " << results[i].title << endl;
-        cout << "|     @ " << results[i].company << " (IPK Min: " << fixed << setprecision(2) << results[i].gpa << ")" << endl;
+        cout << "|     @ " << results[i].company << " (IPK: " << fixed << setprecision(2) << results[i].gpa << " | Kuota: " << results[i].kuota << ")" << endl;
     }
     
     cout << "\033[36m+--------------------------------------------+\033[0m" << endl;
@@ -278,13 +300,18 @@ void searchJobsOnline(ListParent &L, string keyword) {
     cin >> choice;
     
     if (choice > 0 && choice <= numResults) {
-        // Generate unique ID
-        int newID = 200 + rand() % 800;
-        while (findParent(L, newID) != nullptr) {
-            newID = 200 + rand() % 800;
+        // Generate sequential ID (cari ID tertinggi + 1)
+        int maxID = 100; // Start dari 100 jika list kosong
+        address_parent P = L.first;
+        while (P != nullptr) {
+            if (P->info.id_lowongan > maxID) {
+                maxID = P->info.id_lowongan;
+            }
+            P = P->next;
         }
+        int newID = maxID + 1;
         
-        insertParent(L, alokasiParent(newID, results[choice-1].title, results[choice-1].company, results[choice-1].gpa));
+        insertParent(L, alokasiParent(newID, results[choice-1].title, results[choice-1].company, results[choice-1].gpa, results[choice-1].kuota));
         
         cout << "\033[32m| [BERHASIL] Lowongan ditambahkan dengan ID: " << newID << "\033[0m" << endl;
         cout << "\033[36m+============================================+\033[0m" << endl;

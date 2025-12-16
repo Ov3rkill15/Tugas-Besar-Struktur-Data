@@ -12,7 +12,8 @@ struct InfoLowongan {
     int id_lowongan;
     string posisi;
     string nama_perusahaan;
-    float kuota;
+    float ipk_min;    // IPK Minimum (0.00 - 4.00)
+    int kuota;        // Jumlah posisi tersedia
 };
 
 struct NodeParent {
