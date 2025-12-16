@@ -1,33 +1,26 @@
-#include <windows.h> // For CopyFile
+#include <windows.h> // Untuk CopyFile
 #include "lamaran.h"
 #include "lowongan.h"   // Diperlukan untuk mengakses fungsi findParent
 #include "mahasiswa.h"  // Diperlukan untuk mengakses fungsi handleInputMahasiswa dan findChildByNIM
 #include <iomanip>
 #include <cstring>
-
+#include <fstream> // Include untuk  file reading
+#include <vector>  // Include untuk sorting lamaran
 using namespace std;
 
-// Catatan: Fungsi yang dipanggil di sini harus sudah diimplementasikan
-// di file lowongan.cpp dan mahasiswa.cpp masing-masing.
-
-#include <fstream> // Include for file reading
-
-// Helper function to calculate ATS Score from File
+// Helper function untuk calculate ATS Score from File
 int hitungSkorATS(string filePath) {
     int score = 0;
     string keywords[] = {"C++", "Python", "Java", "SQL", "Teamwork", "Leadership", "Communication", "Problem Solving", "Analisis", "Desain"};
     
     ifstream file(filePath, ios::binary); // Open in binary mode to handle PDF/any file safely
     if (!file.is_open()) {
-        return 0; // File not found or cannot open
+        return 0;
     }
-
-    // Read entire file into a string buffer
     string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
     file.close();
 
     for (const string& keyword : keywords) {
-        // Simple search in the raw binary/text content
         if (content.find(keyword) != string::npos) {
             score += 10;
         }
@@ -35,14 +28,12 @@ int hitungSkorATS(string filePath) {
     return score;
 }
 
-// Helper to get file extension
 string getExtension(string path) {
     size_t dot = path.find_last_of(".");
     if (dot != string::npos) return path.substr(dot);
     return "";
 }
 
-// Helper function to "Upload" file (Copy to uploads folder)
 string uploadFile(string sourcePath, string nim, int id_lowongan) {
     string ext = getExtension(sourcePath);
     if (ext.empty()) ext = ".pdf"; // Default to pdf if unknown
@@ -58,7 +49,6 @@ string uploadFile(string sourcePath, string nim, int id_lowongan) {
     }
 }
 
-// 1. Insert element relation (Mahasiswa Ajukan Lamaran)
 void insertRelasi(ListParent &L_Parent, ListChild &L_Child, int ID_Lowongan, string NIM_Mhs, string Nama_Mhs, int ID_Lamaran_Baru, string CV_Path) {
     // 1. Pastikan data Mahasiswa ada/dibuat di List Child
     handleInputMahasiswa(L_Child, NIM_Mhs, Nama_Mhs);
@@ -103,6 +93,7 @@ void insertRelasi(ListParent &L_Parent, ListChild &L_Child, int ID_Lowongan, str
         cout << " Error: Lowongan ID " << ID_Lowongan << " tidak ditemukan. Lamaran dibatalkan." << endl;
     }
 }
+
 void showStatusLamaranMahasiswa(ListParent L_Parent, string NIM_Target) {
     address_parent P = L_Parent.first;
     bool found_lamaran = false;
@@ -134,7 +125,7 @@ void showStatusLamaranMahasiswa(ListParent L_Parent, string NIM_Target) {
         cout << "Tidak ada lamaran ditemukan untuk NIM " << NIM_Target << "." << endl;
     }
 }
-// Tambahkan atau pastikan implementasi ini ada di lamaran.cpp
+
 
 void showRekapLamaranPerusahaan(ListParent L_Parent) {
     address_parent P = L_Parent.first;
@@ -209,7 +200,7 @@ void editStatusDosen(ListParent &L_Parent, int ID_Lamaran_Target, int Status_Bar
     }
 }
 
-// Implementasi fungsi Edit Perusahaan (untuk keputusan akhir)
+
 void editStatusPerusahaan(ListParent &L_Parent, int ID_Lamaran_Target) {
     address_parent P_Parent = L_Parent.first;
     address_relasi R_Target = nullptr;
@@ -268,7 +259,6 @@ void editStatusPerusahaan(ListParent &L_Parent, int ID_Lamaran_Target) {
     }
 }
 
-// Catatan: Anda juga harus memastikan fungsi showLowonganDanPelamar sudah diimplementasikan untuk Show M:N.
 void showLowonganDanPelamar(ListParent L_Parent) {
     address_parent P = L_Parent.first;
 
@@ -319,27 +309,45 @@ void showRekapLamaranDosen(ListParent L_Parent) {
         return;
     }
 
-    bool adaLamaran = false;
+    // Kumpulkan semua lamaran ke dalam vector untuk diurutkan
+    vector<address_relasi> semuaLamaran;
     while (P != nullptr) {
         address_relasi R = P->first_relasi;
         while (R != nullptr) {
-            adaLamaran = true;
-            address_child C = R->ptr_child;
-            
-            cout << "[ID LAMARAN: " << R->info.id_lamaran << "] " << endl;
-            cout << "   Mahasiswa : " << C->info.nama << " (" << C->info.nim << ")" << endl;
-            cout << "   Perusahaan: " << P->info.nama_perusahaan << " - " << P->info.posisi << endl;
-            cout << "   Status Dosen     : " << (R->info.status_dosen == 1 ? "DISETUJUI" : (R->info.status_dosen == 2 ? "DITOLAK" : "Menunggu")) << endl;
-            cout << "   Status Perusahaan: " << (R->info.status_perusahaan == 1 ? "DITERIMA" : (R->info.status_perusahaan == 2 ? "DITOLAK" : "Menunggu")) << endl;
-            cout << "--------------------------------------------------------" << endl;
-
+            semuaLamaran.push_back(R);
             R = R->next;
         }
         P = P->next;
     }
 
-    if (!adaLamaran) {
+    if (semuaLamaran.empty()) {
         cout << "Tidak ada data lamaran mahasiswa." << endl;
+        return;
+    }
+
+    // Urutkan berdasarkan ID lamaran (ascending)
+    for (int i = 0; i < semuaLamaran.size() - 1; i++) {
+        for (int j = i + 1; j < semuaLamaran.size(); j++) {
+            if (semuaLamaran[i]->info.id_lamaran > semuaLamaran[j]->info.id_lamaran) {
+                address_relasi temp = semuaLamaran[i];
+                semuaLamaran[i] = semuaLamaran[j];
+                semuaLamaran[j] = temp;
+            }
+        }
+    }
+
+    // Tampilkan hasil yang sudah diurutkan
+    for (int i = 0; i < semuaLamaran.size(); i++) {
+        address_relasi R = semuaLamaran[i];
+        address_child C = R->ptr_child;
+        address_parent Par = R->ptr_parent;
+        
+        cout << "[ID LAMARAN: " << R->info.id_lamaran << "] " << endl;
+        cout << "   Mahasiswa : " << C->info.nama << " (" << C->info.nim << ")" << endl;
+        cout << "   Perusahaan: " << Par->info.nama_perusahaan << " - " << Par->info.posisi << endl;
+        cout << "   Status Dosen     : " << (R->info.status_dosen == 1 ? "DISETUJUI" : (R->info.status_dosen == 2 ? "DITOLAK" : "Menunggu")) << endl;
+        cout << "   Status Perusahaan: " << (R->info.status_perusahaan == 1 ? "DITERIMA" : (R->info.status_perusahaan == 2 ? "DITOLAK" : "Menunggu")) << endl;
+        cout << "--------------------------------------------------------" << endl;
     }
 }
 
@@ -387,11 +395,6 @@ void showNotifikasi(ListParent L_Parent, string NIM) {
     }
 }
 
-// ==================================================================================
-// FUNGSI BARU MLL TIPE B (Requirement f, i, o, p, q, r, s, t)
-// ==================================================================================
-
-// f. Delete element relation - Hapus lamaran berdasarkan ID
 void deleteRelasi(ListParent &L_Parent, int ID_Lamaran_Target) {
     address_parent P = L_Parent.first;
     
@@ -401,12 +404,9 @@ void deleteRelasi(ListParent &L_Parent, int ID_Lamaran_Target) {
         
         while (R_Current != nullptr) {
             if (R_Current->info.id_lamaran == ID_Lamaran_Target) {
-                // Found the relation to delete
                 if (R_Before == nullptr) {
-                    // Hapus node pertama
                     P->first_relasi = R_Current->next;
                 } else {
-                    // Hapus node tengah/akhir
                     R_Before->next = R_Current->next;
                 }
                 cout << " Lamaran ID " << ID_Lamaran_Target << " berhasil dihapus/dibatalkan." << endl;
@@ -421,7 +421,70 @@ void deleteRelasi(ListParent &L_Parent, int ID_Lamaran_Target) {
     cout << " Lamaran ID " << ID_Lamaran_Target << " tidak ditemukan." << endl;
 }
 
-// i. Find apakah parent dan child tertentu memiliki relasi
+void showLamaranMahasiswaUntukHapus(ListParent L_Parent, string NIM_Target) {
+    cout << "\n========================================================" << endl;
+    cout << "DAFTAR LAMARAN ANDA (NIM: " << NIM_Target << ")" << endl;
+    cout << "========================================================" << endl;
+    
+    bool found_lamaran = false;
+    address_parent P = L_Parent.first;
+    
+    while (P != nullptr) {
+        address_relasi R = P->first_relasi;
+        while (R != nullptr) {
+            if (R->ptr_child->info.nim == NIM_Target) {
+                found_lamaran = true;
+                cout << "  [ID LAMARAN: " << R->info.id_lamaran << "]" << endl;
+                cout << "    Lowongan  : " << P->info.posisi << " (" << P->info.nama_perusahaan << ")" << endl;
+                cout << "    Status    : Dosen=" << (R->info.status_dosen == 1 ? "Disetujui" : (R->info.status_dosen == 2 ? "Ditolak" : "Menunggu"))
+                     << ", Perusahaan=" << (R->info.status_perusahaan == 1 ? "Diterima" : (R->info.status_perusahaan == 2 ? "Ditolak" : "Menunggu")) << endl;
+                cout << "  -----------------------------------------------" << endl;
+            }
+            R = R->next;
+        }
+        P = P->next;
+    }
+    
+    if (!found_lamaran) {
+        cout << "Anda belum memiliki lamaran yang tercatat." << endl;
+    }
+}
+
+bool deleteRelasiMahasiswa(ListParent &L_Parent, int ID_Lamaran_Target, string NIM_Pemilik) {
+    address_parent P = L_Parent.first;
+    
+    while (P != nullptr) {
+        address_relasi R_Before = nullptr;
+        address_relasi R_Current = P->first_relasi;
+        
+        while (R_Current != nullptr) {
+            if (R_Current->info.id_lamaran == ID_Lamaran_Target) {
+                // Validasi kepemilikan: cek apakah NIM pada lamaran sama dengan NIM yang login
+                if (R_Current->ptr_child->info.nim != NIM_Pemilik) {
+                    cout << " [GAGAL] Lamaran ID " << ID_Lamaran_Target << " bukan milik Anda (NIM: " << NIM_Pemilik << ")." << endl;
+                    cout << "         Anda hanya dapat membatalkan lamaran milik sendiri." << endl;
+                    return false;
+                }
+                
+                // Jika validasi lolos, lakukan penghapusan
+                if (R_Before == nullptr) {
+                    P->first_relasi = R_Current->next;
+                } else {
+                    R_Before->next = R_Current->next;
+                }
+                cout << " [BERHASIL] Lamaran ID " << ID_Lamaran_Target << " berhasil dibatalkan." << endl;
+                delete R_Current;
+                return true;
+            }
+            R_Before = R_Current;
+            R_Current = R_Current->next;
+        }
+        P = P->next;
+    }
+    cout << " [GAGAL] Lamaran ID " << ID_Lamaran_Target << " tidak ditemukan." << endl;
+    return false;
+}
+
 bool findRelasi(ListParent L_Parent, int ID_Lowongan, string NIM_Mhs) {
     address_parent P = findParent(L_Parent, ID_Lowongan);
     
@@ -445,7 +508,6 @@ bool findRelasi(ListParent L_Parent, int ID_Lowongan, string NIM_Mhs) {
     return false;
 }
 
-// o. Show setiap data child beserta data parent yang berelasi dengannya
 void showAllChildWithParent(ListParent L_Parent, ListChild L_Child) {
     cout << "\n========================================================" << endl;
     cout << "DAFTAR SEMUA MAHASISWA DAN LOWONGAN YANG DILAMAR" << endl;
@@ -484,7 +546,6 @@ void showAllChildWithParent(ListParent L_Parent, ListChild L_Child) {
     }
 }
 
-// p. Count jumlah child element parent tertentu
 int countChildPerParent(ListParent L_Parent, int ID_Lowongan) {
     address_parent P = findParent(L_Parent, ID_Lowongan);
     if (P == nullptr) {
@@ -503,7 +564,6 @@ int countChildPerParent(ListParent L_Parent, int ID_Lowongan) {
     return count;
 }
 
-// q. Count jumlah parent yang dimiliki oleh child tertentu
 int countParentPerChild(ListParent L_Parent, string NIM_Target) {
     int count = 0;
     
@@ -523,7 +583,6 @@ int countParentPerChild(ListParent L_Parent, string NIM_Target) {
     return count;
 }
 
-// r. Count element child yang tidak memiliki parent (belum melamar)
 int countChildWithoutRelasi(ListParent L_Parent, ListChild L_Child) {
     int count = 0;
     
@@ -555,7 +614,6 @@ int countChildWithoutRelasi(ListParent L_Parent, ListChild L_Child) {
     return count;
 }
 
-// s. Count element parent yang tidak memiliki child (lowongan tanpa pelamar)
 int countParentWithoutRelasi(ListParent L_Parent) {
     int count = 0;
     
@@ -572,12 +630,10 @@ int countParentWithoutRelasi(ListParent L_Parent) {
     return count;
 }
 
-// t. Edit relasi - Ganti child dari parent tertentu
 void editRelasi(ListParent &L_Parent, ListChild L_Child, int ID_Lamaran_Target) {
     address_parent P = L_Parent.first;
     address_relasi R_Target = nullptr;
     
-    // Cari relasi yang akan diedit
     while (P != nullptr && R_Target == nullptr) {
         address_relasi R = P->first_relasi;
         while (R != nullptr) {
@@ -591,38 +647,76 @@ void editRelasi(ListParent &L_Parent, ListChild L_Child, int ID_Lamaran_Target) 
     }
     
     if (R_Target == nullptr) {
-        cout << " Lamaran ID " << ID_Lamaran_Target << " tidak ditemukan." << endl;
+        cout << "\033[31m"; // Red
+        cout << " [ERROR] Lamaran ID " << ID_Lamaran_Target << " tidak ditemukan." << endl;
+        cout << "\033[0m";
         return;
     }
     
-    cout << "\n--- EDIT RELASI (Lamaran ID: " << ID_Lamaran_Target << ") ---" << endl;
-    cout << "Data saat ini:" << endl;
-    cout << "  Mahasiswa: " << R_Target->ptr_child->info.nim << " (" << R_Target->ptr_child->info.nama << ")" << endl;
-    cout << "  Lowongan : " << R_Target->ptr_parent->info.posisi << " (" << R_Target->ptr_parent->info.nama_perusahaan << ")" << endl;
+    // Header
+    cout << "\n\033[36m"; // Cyan
+    cout << "+============================================+" << endl;
+    cout << "|          \033[33mEDIT RELASI LAMARAN\033[36m              |" << endl;
+    cout << "+============================================+" << endl;
+    cout << "\033[0m";
     
-    cout << "\nPilih yang ingin diubah:" << endl;
-    cout << "1. Ganti Mahasiswa (Child)" << endl;
-    cout << "2. Batal" << endl;
-    cout << "Pilihan: ";
+    // Data saat ini - dalam box
+    cout << "\033[33m"; // Yellow
+    cout << "| ID Lamaran : \033[97m" << ID_Lamaran_Target << "\033[33m" << endl;
+    cout << "+--------------------------------------------+" << endl;
+    cout << "| \033[36mDATA SAAT INI:\033[33m                            |" << endl;
+    cout << "+--------------------------------------------+" << endl;
+    cout << "\033[0m";
+    
+    cout << "| Mahasiswa  : \033[92m" << R_Target->ptr_child->info.nama << "\033[0m" << endl;
+    cout << "| NIM        : \033[97m" << R_Target->ptr_child->info.nim << "\033[0m" << endl;
+    cout << "| Lowongan   : \033[93m" << R_Target->ptr_parent->info.posisi << "\033[0m" << endl;
+    cout << "| Perusahaan : \033[95m" << R_Target->ptr_parent->info.nama_perusahaan << "\033[0m" << endl;
+    cout << "| Status Dosen: " << (R_Target->info.status_dosen == 1 ? "\033[92mDISETUJUI" : (R_Target->info.status_dosen == 2 ? "\033[91mDITOLAK" : "\033[93mMenunggu")) << "\033[0m" << endl;
+    cout << "| Status Persh: " << (R_Target->info.status_perusahaan == 1 ? "\033[92mDITERIMA" : (R_Target->info.status_perusahaan == 2 ? "\033[91mDITOLAK" : "\033[93mMenunggu")) << "\033[0m" << endl;
+    
+    cout << "\033[36m";
+    cout << "+--------------------------------------------+" << endl;
+    cout << "| \033[33mPILIH AKSI:\033[36m                               |" << endl;
+    cout << "+--------------------------------------------+" << endl;
+    cout << "\033[0m";
+    cout << "| \033[92m[1]\033[0m Ganti Mahasiswa (Child)" << endl;
+    cout << "| \033[91m[0]\033[0m Batal" << endl;
+    cout << "\033[36m+============================================+\033[0m" << endl;
+    cout << "Pilihan Anda: ";
     
     int pilihan;
     cin >> pilihan;
     
     if (pilihan == 1) {
+        cout << "\n\033[36m+--------------------------------------------+\033[0m" << endl;
+        cout << "| \033[33mGANTI MAHASISWA\033[0m" << endl;
+        cout << "\033[36m+--------------------------------------------+\033[0m" << endl;
+        
         string nim_baru;
-        cout << "Masukkan NIM Mahasiswa baru: ";
+        cout << "| Masukkan NIM Mahasiswa baru: ";
         cin.ignore();
         getline(cin, nim_baru);
         
         address_child C_Baru = findChildByNIM(L_Child, nim_baru);
         if (C_Baru == nullptr) {
-            cout << " Mahasiswa dengan NIM " << nim_baru << " tidak ditemukan di sistem." << endl;
+            cout << "\033[31m"; // Red
+            cout << "| [ERROR] Mahasiswa dengan NIM " << nim_baru << " tidak ditemukan!" << endl;
+            cout << "\033[36m+--------------------------------------------+\033[0m" << endl;
             return;
         }
         
+        string nama_lama = R_Target->ptr_child->info.nama;
         R_Target->ptr_child = C_Baru;
-        cout << " Berhasil! Lamaran ID " << ID_Lamaran_Target << " sekarang milik " << C_Baru->info.nama << " (" << nim_baru << ")." << endl;
+        
+        cout << "\033[32m"; // Green
+        cout << "| [BERHASIL] Relasi diperbarui!" << endl;
+        cout << "|" << endl;
+        cout << "|  Dari : " << nama_lama << endl;
+        cout << "|  Ke   : " << C_Baru->info.nama << " (" << nim_baru << ")" << endl;
+        cout << "\033[36m+============================================+\033[0m" << endl;
     } else {
-        cout << " Edit dibatalkan." << endl;
+        cout << "\033[33m| Edit dibatalkan.\033[0m" << endl;
+        cout << "\033[36m+============================================+\033[0m" << endl;
     }
 }

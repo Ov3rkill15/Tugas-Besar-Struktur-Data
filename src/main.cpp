@@ -10,7 +10,7 @@
 
 using namespace std;
 
-// Enum for Role-based Switch Case
+// Enum untuk Role-based Switch Case
 enum Role {
     ROLE_MAHASISWA,
     ROLE_DOSEN,
@@ -27,7 +27,7 @@ Role getRoleEnum(string roleStr) {
     return ROLE_UNKNOWN;
 }
 
-// Helper function to open File Dialog
+// Helper function untuk open File Dialog
 string OpenFileDialog() {
     OPENFILENAME ofn;
     char szFile[260];
@@ -50,7 +50,6 @@ string OpenFileDialog() {
     return "";
 }
 
-// --- FUNGSI CLEANUP ---
 void Cleanup() {
     cout << "Cleaning up temporary files..." << endl;
     
@@ -78,7 +77,6 @@ void Cleanup() {
     }
 }
 
-// --- FUNGSI UTAMA ---
 int main() {
     ListParent L_Parent;
     ListChild L_Child;
@@ -92,16 +90,51 @@ int main() {
     insertParent(L_Parent, alokasiParent(103, "Backend Engineer", "ServerX", 2));
     
     // Data Mahasiswa - dari data kelas (login.cpp)
-    insertChild(L_Child, alokasiChild("1030324" "0104", "Muhamad Alwan Suryadi", 2024));
-    insertChild(L_Child, alokasiChild("1030324" "0035", "Fathurrahman Alfarizi", 2024));
-    insertChild(L_Child, alokasiChild("1030324" "0010", "Azriel Raihan Eldova Hartoto", 2024));
-    insertChild(L_Child, alokasiChild("1030324" "0001", "Nathasya Yuan Maharani", 2024));
-    insertChild(L_Child, alokasiChild("1030324" "0006", "Theodore Elvis Estrada", 2024));
-    
+    insertChild(L_Child, alokasiChild("103032400104", "Muhamad Alwan Suryadi", 2024));
+    insertChild(L_Child, alokasiChild("103032400035", "Fathurrahman Alfarizi", 2024));
+    insertChild(L_Child, alokasiChild("103032400010", "Azriel Raihan Eldova Hartoto", 2024));
+    insertChild(L_Child, alokasiChild("103032400001", "Nathasya Yuan Maharani", 2024));
+    insertChild(L_Child, alokasiChild("103032400006", "Theodore Elvis Estrada", 2024));
+    insertChild(L_Child, alokasiChild("103032400009", "Dyah Kusuma Wardani", 2024));
+    insertChild(L_Child, alokasiChild("103032400022", "Muhammad Ilham Alifianda", 2024));
+    insertChild(L_Child, alokasiChild("103032400026", "Alya Aziza Puteri", 2024));
+    insertChild(L_Child, alokasiChild("103032400029", "Ahmad Abdan Syakuro", 2024));
+    insertChild(L_Child, alokasiChild("103032400040", "Nuswantoro Setyo Mukti", 2024));
+    insertChild(L_Child, alokasiChild("103032400041", "Anggit Cahyati Hidayat", 2024));
+    insertChild(L_Child, alokasiChild("103032400048", "Wibnu Hijrah Franstio", 2024));
+    insertChild(L_Child, alokasiChild("103032400050", "Meysha Primiandita", 2024));
+    insertChild(L_Child, alokasiChild("103032400056", "Muhammad Fiqri Habibi", 2024));
+    insertChild(L_Child, alokasiChild("103032400060", "Fitri Cahyani", 2024));
+    insertChild(L_Child, alokasiChild("103032400062", "Triansyah Daniswara Ibrahim", 2024));
+    insertChild(L_Child, alokasiChild("103032400068", "Rakha Abdillah Alkautsar", 2024));
+    insertChild(L_Child, alokasiChild("103032400073", "Avicenna Naufal Lathif", 2024));
+    insertChild(L_Child, alokasiChild("103032400078", "Nayla Assyifa", 2024));
+    insertChild(L_Child, alokasiChild("103032400084", "William Peter Vanxnajoan", 2024));
+    insertChild(L_Child, alokasiChild("103032400087", "Rayvan Alifarlo Mahesworo", 2024));
+    insertChild(L_Child, alokasiChild("103032400088", "Zaidan Salam Rojab", 2024));
+    insertChild(L_Child, alokasiChild("103032400093", "Audrey Frediley Hanas", 2024));
+    insertChild(L_Child, alokasiChild("103032400096", "Muhammad Naelfadly", 2024));
+    insertChild(L_Child, alokasiChild("103032400100", "Naira Cahaya Putri Darmawan Sinaga", 2024));
+    insertChild(L_Child, alokasiChild("103032400107", "Dhafy Ahmad Zubaidi", 2024));
+    insertChild(L_Child, alokasiChild("103032400117", "Muhammad Faris Dhiyaylhaq Sarbini", 2024));
+    insertChild(L_Child, alokasiChild("103032400123", "Nursyadira", 2024));
+    insertChild(L_Child, alokasiChild("103032400124", "Rayfito Krisna Wijaya", 2024));
+    insertChild(L_Child, alokasiChild("103032400129", "Mochammad Rafis Qullah", 2024));
+    insertChild(L_Child, alokasiChild("103032400134", "I putu Gede Agastyakrisna Widartha", 2024));
+    insertChild(L_Child, alokasiChild("103032400137", "Rendil", 2024));
+    insertChild(L_Child, alokasiChild("103032400138", "Muhammad Ariq Azzaki", 2024));
+    insertChild(L_Child, alokasiChild("103032400155", "Edmund Yulius Gantur", 2024));
+    insertChild(L_Child, alokasiChild("103032400157", "Muhammad Sayyid Huwaidi", 2024));
+    insertChild(L_Child, alokasiChild("103032400160", "Muh Dzul Jalali Wali Ikram Jalil", 2024));
+    insertChild(L_Child, alokasiChild("103032430003", "Ramadhan Tangguh Defennder", 2024));
+    insertChild(L_Child, alokasiChild("103032430025", "Adzkiya Putri Rahmawan", 2024));
+    insertChild(L_Child, alokasiChild("103032430029", "Fathimah Radhiyya", 2024));
+    insertChild(L_Child, alokasiChild("103032430034", "Rakan Ghazian Adi Wijaya", 2024));
+    insertChild(L_Child, alokasiChild("103032430037", "Jihan Nabila Mubarakah", 2024));
     // Data Lamaran (relasi) - manual karena butuh struktur khusus
     // Lamaran 1: Alwan -> TechCorp (Data Scientist)
     address_parent P1 = findParent(L_Parent, 101);
-    address_child C1 = findChildByNIM(L_Child, "10303240104");
+    address_child C1 = findChildByNIM(L_Child, "103032400104");
     if (P1 && C1) {
         address_relasi R1 = new NodeRelasi;
         R1->info.id_lamaran = 1;
@@ -116,7 +149,7 @@ int main() {
     }
     
     // Lamaran 2: Fathur -> TechCorp (Data Scientist)
-    address_child C2 = findChildByNIM(L_Child, "10303240035");
+    address_child C2 = findChildByNIM(L_Child, "103032400035");
     if (P1 && C2) {
         address_relasi R2 = new NodeRelasi;
         R2->info.id_lamaran = 2;
@@ -137,7 +170,7 @@ int main() {
     
     // Lamaran 3: Azriel -> GameDev (Mobile Dev)
     address_parent P2 = findParent(L_Parent, 102);
-    address_child C3 = findChildByNIM(L_Child, "10303240010");
+    address_child C3 = findChildByNIM(L_Child, "103032400010");
     if (P2 && C3) {
         address_relasi R3 = new NodeRelasi;
         R3->info.id_lamaran = 3;
@@ -164,9 +197,9 @@ int main() {
     int counter_lamaran = 4; // Start after mock data
 
     while (true) { // Outer loop for Login/Logout
-        string activeUser, activeRole;
-        if (!Login(activeUser, activeRole)) {
-            Cleanup(); // <--- CALL CLEANUP HERE
+        string activeUser, activeRole, activeNIM;  // Tambah activeNIM
+        if (!Login(activeUser, activeRole, activeNIM)) {
+            Cleanup();
             cout << "Aplikasi ditutup." << endl;
             return 0;
         }
@@ -190,24 +223,14 @@ int main() {
              insertParent(L_Parent, alokasiParent(106, "Product Manager", "StartUpInc", 3.0));
         }
         
+        // Gunakan activeNIM langsung untuk mahasiswa (tidak perlu cari manual lagi)
+        string currentNIM = activeNIM;
+        
         while (true) {
-            // --- PRE-CALCULATE NOTIFICATIONS FOR MENU ---
             int notifCount = 0;
-            if (activeRole == "mahasiswa") {
-                string currentNIM = "";
-                address_child C = L_Child.first;
-                while (C != nullptr) {
-                    if (C->info.nama == activeUser) { 
-                        currentNIM = C->info.nim;
-                        break;
-                    }
-                    C = C->next;
-                }
-                if (!currentNIM.empty()) {
-                    notifCount = countNotifikasi(L_Parent, currentNIM);
-                }
+            if (activeRole == "mahasiswa" && !currentNIM.empty()) {
+                notifCount = countNotifikasi(L_Parent, currentNIM);
             }
-            // -------------------------------------------
 
             cout << "\n";
             cout << "\033[36m"; // Cyan color
@@ -226,7 +249,7 @@ int main() {
                     cout << "| [4] " << char(175) << " Cek Status Lamaran           |" << endl;
                     cout << "| [5] " << char(175) << " Cari Lowongan (by ID)        |" << endl;
                     cout << "| [6] " << char(175) << " Batalkan Lamaran             |" << endl;
-                    cout << "| [7] " << char(175) << " Pesan (" << notifCount << ")                      |" << endl;
+                    cout << "| [7] " << char(175) << " Pesan (" << notifCount << ")                    |" << endl;
                     cout << "\033[31m"; // Red
                     cout << "| [0] " << char(174) << " Keluar (Logout)              |" << endl;
                     cout << "\033[0m";
@@ -262,19 +285,28 @@ int main() {
                     cout << "\033[0m";
                     break;
                 case ROLE_ADMIN:
+                    PrintAdminHeader(); // Tampilkan ASCII Art ADMIN merah
                     cout << "\033[33m";
-                    cout << "| [1] " << char(175) << " Kelola User (Admin Panel)    |" << endl;
-                    cout << "| [2] " << char(175) << " Lihat Semua Data (M:N)       |" << endl;
-                    cout << "| [3] " << char(175) << " Rekap Semua Lamaran          |" << endl;
-                    cout << "| [4] " << char(175) << " Cari Mahasiswa (by NIM)      |" << endl;
-                    cout << "| [5] " << char(175) << " Cari Lowongan (by ID)        |" << endl;
-                    cout << "| [6] " << char(175) << " Hapus Mahasiswa (by NIM)     |" << endl;
-                    cout << "| [7] " << char(175) << " Hapus Lowongan (by ID)       |" << endl;
-                    cout << "| [8] " << char(175) << " Batalkan/Hapus Lamaran       |" << endl;
-                    cout << "| [9] " << char(175) << " Cek Relasi Lowongan-Mhs      |" << endl;
-                    cout << "| [10]" << char(175) << " Lihat Semua Mhs + Lowongan   |" << endl;
-                    cout << "| [11]" << char(175) << " Statistik Lengkap            |" << endl;
-                    cout << "| [12]" << char(175) << " Edit Relasi                  |" << endl;
+                    cout << "| === KELOLA PENGGUNA ===               |" << endl;
+                    cout << "| [1] " << char(175) << " Tambah Pengguna Baru         |" << endl;
+                    cout << "| [2] " << char(175) << " Hapus Pengguna               |" << endl;
+                    cout << "| [3] " << char(175) << " Ubah Data Pengguna           |" << endl;
+                    cout << "| [4] " << char(175) << " Cetak Daftar Pengguna        |" << endl;
+                    cout << "| [5] " << char(175) << " Reset Password Pengguna      |" << endl;
+                    cout << "| [6] " << char(175) << " Ganti Password Admin         |" << endl;
+                    cout << "| [7] " << char(175) << " Lihat Riwayat Admin          |" << endl;
+                    cout << "| === KELOLA DATA ===                   |" << endl;
+                    cout << "| [8] " << char(175) << " Lihat Semua Data (M:N)       |" << endl;
+                    cout << "| [9] " << char(175) << " Rekap Semua Lamaran          |" << endl;
+                    cout << "| [10]" << char(175) << " Cari Mahasiswa (by NIM)      |" << endl;
+                    cout << "| [11]" << char(175) << " Cari Lowongan (by ID)        |" << endl;
+                    cout << "| [12]" << char(175) << " Hapus Mahasiswa (by NIM)     |" << endl;
+                    cout << "| [13]" << char(175) << " Hapus Lowongan (by ID)       |" << endl;
+                    cout << "| [14]" << char(175) << " Batalkan/Hapus Lamaran       |" << endl;
+                    cout << "| [15]" << char(175) << " Cek Relasi Lowongan-Mhs      |" << endl;
+                    cout << "| [16]" << char(175) << " Lihat Semua Mhs + Lowongan   |" << endl;
+                    cout << "| [17]" << char(175) << " Statistik Lengkap            |" << endl;
+                    cout << "| [18]" << char(175) << " Edit Relasi                  |" << endl;
                     cout << "\033[31m";
                     cout << "| [0] " << char(174) << " Keluar (Logout)              |" << endl;
                     cout << "\033[0m";
@@ -306,24 +338,10 @@ int main() {
             
             switch (getRoleEnum(activeRole)) {
                 case ROLE_MAHASISWA: {
-                    // Try to find NIM based on activeUser (assuming Name == Username)
-                    string currentNIM = "";
-                    address_child C = L_Child.first;
-                    while (C != nullptr) {
-                        if (C->info.nama == activeUser) { // Simple matching
-                            currentNIM = C->info.nim;
-                            break;
-                        }
-                        C = C->next;
-                    }
+                    // currentNIM sudah didapat dari login (activeNIM), tidak perlu cari lagi
                     
-                    int notifCount = 0;
-                    if (!currentNIM.empty()) {
-                        notifCount = countNotifikasi(L_Parent, currentNIM);
-                    }
-
                     switch (pilihan_menu_utama) {
-                        case 1: { // Input Data Diri
+                        case 1: { // Input Data Diri (Menu ini tetap meminta NIM manual)
                             int pilihan_sub;
                             do {
                                 string nim_input;
@@ -332,7 +350,6 @@ int main() {
                                 cout << "\n--- INPUT DATA DIRI ---" << endl;
                                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                                 cout << "Masukkan NIM: "; getline(cin, nim_input);
-                                // Auto-fill name with activeUser to ensure matching
                                 cout << "Nama Lengkap (Otomatis): " << activeUser << endl;
                                 strcpy(nama_input, activeUser.c_str()); 
                                 
@@ -357,11 +374,16 @@ int main() {
                             break;
                         }
                         case 3: { // Ajukan Lamaran + CV (PDF Picker)
+                            if (currentNIM.empty()) {
+                                cout << "Silakan 'Input Data Diri' terlebih dahulu agar sistem mengenali NIM Anda." << endl;
+                                break;
+                            }
+                            
                             int id_lowongan_input;
-                            string nim_input, cv_path;
-                            char nama_input[100];
+                            string cv_path;
                             
                             cout << "--- AJUKAN LAMARAN ---" << endl;
+                            cout << "NIM Anda: " << currentNIM << " (Otomatis)" << endl;
                             cout << "1. Pilih File CV (PDF/TXT) akan terbuka otomatis..." << endl;
                             system("pause"); 
                             
@@ -373,21 +395,19 @@ int main() {
                             cout << "File terpilih: " << cv_path << endl;
 
                             cout << "Masukkan ID Lowongan: "; cin >> id_lowongan_input;
-                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "Nama Lengkap: " << activeUser << " (Otomatis)" << endl;
                             
-                            cout << "Masukkan NIM Anda: "; getline(cin, nim_input);
-                            // Auto-fill name
-                            cout << "Nama Lengkap: " << activeUser << endl;
-                            
-                            insertRelasi(L_Parent, L_Child, id_lowongan_input, nim_input, activeUser, counter_lamaran++, cv_path);
+                            insertRelasi(L_Parent, L_Child, id_lowongan_input, currentNIM, activeUser, counter_lamaran++, cv_path);
                             break;
                         }
-                        case 4: { // Status Lamaran
-                            string nim_input;
+                        case 4: { // Status Lamaran - OTOMATIS, tidak perlu input NIM
+                            if (currentNIM.empty()) {
+                                cout << "Silakan 'Input Data Diri' terlebih dahulu agar sistem mengenali NIM Anda." << endl;
+                                break;
+                            }
                             cout << "\n--- STATUS LAMARAN ---" << endl;
-                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                            cout << "Masukkan NIM Anda: "; getline(cin, nim_input);
-                            showStatusLamaranMahasiswa(L_Parent, nim_input);
+                            cout << "NIM Anda: " << currentNIM << " (Otomatis)" << endl;
+                            showStatusLamaranMahasiswa(L_Parent, currentNIM);
                             break;
                         }
                         case 5: { // Cari Lowongan (by ID)
@@ -396,10 +416,25 @@ int main() {
                             break;
                         }
                         case 6: { // Batalkan Lamaran
+                            if (currentNIM.empty()) {
+                                cout << "Silakan 'Input Data Diri' terlebih dahulu agar sistem mengenali NIM Anda." << endl;
+                                break;
+                            }
+                            
+                            // Tampilkan daftar lamaran milik mahasiswa ini
+                            showLamaranMahasiswaUntukHapus(L_Parent, currentNIM);
+                            
                             int id_batal;
-                            cout << "Masukkan ID Lamaran yang ingin dibatalkan: ";
+                            cout << "\nMasukkan ID Lamaran yang ingin dibatalkan (0 untuk batal): ";
                             cin >> id_batal;
-                            deleteRelasi(L_Parent, id_batal);
+                            
+                            if (id_batal == 0) {
+                                cout << "Pembatalan dibatalkan." << endl;
+                                break;
+                            }
+                            
+                            // Gunakan fungsi yang memvalidasi kepemilikan
+                            deleteRelasiMahasiswa(L_Parent, id_batal, currentNIM);
                             break;
                         }
                         case 7: { // Pesan / Notifikasi
@@ -497,16 +532,14 @@ int main() {
                             showRekapLamaranPerusahaan(L_Parent);
                             break;
                         }
-                        case 4: { // API Search
+                        case 4: { // Cari Lowongan Online (C++ Native)
                             string keyword;
                             cout << "Masukkan Kata Kunci Lowongan (misal: Java, Marketing): ";
                             cin.ignore(numeric_limits<streamsize>::max(), '\n');
                             getline(cin, keyword);
 
-                            string command = "python tools/search_jobs.py \"" + keyword + "\"";
-                            system(command.c_str());
-
-                            importLowonganFromAPI(L_Parent, "search_results.txt");
+                            // Langsung panggil fungsi C++ (tidak perlu Python lagi)
+                            searchJobsOnline(L_Parent, keyword);
                             break;
                         }
                         case 5: { // Cari Mahasiswa (by NIM)
@@ -547,90 +580,152 @@ int main() {
                 }
                 case ROLE_ADMIN: {
                     switch (pilihan_menu_utama) {
-                        case 1: { // Admin Panel
-                            bool logout = false;
-                            MainAdmin("admin", logout); 
+                        case 1: { // Tambah Pengguna Baru
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            TambahPenggunaBaru("admin");
                             break;
                         }
-                        case 2: { // Show All
+                        case 2: { // Hapus Pengguna
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            HapusPengguna("admin");
+                            break;
+                        }
+                        case 3: { // Ubah Data Pengguna
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            UbahDataPengguna("admin");
+                            break;
+                        }
+                        case 4: { // Cetak Daftar Pengguna
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            CetakPengguna();
+                            break;
+                        }
+                        case 5: { // Reset Password Pengguna
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            ResetPasswordPengguna("admin");
+                            break;
+                        }
+                        case 6: { // Ganti Password Admin
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            GantiPasswordAdmin("admin");
+                            break;
+                        }
+                        case 7: { // Lihat Riwayat Admin
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            LihatRiwayatAdmin();
+                            break;
+                        }
+                        case 8: { // Lihat Semua Data (M:N)
                             showLowonganDanPelamar(L_Parent);
+                            CatatRiwayatAdmin("admin", "Melihat semua data (M:N)");
                             break;
                         }
-                        case 3: { // Rekap
+                        case 9: { // Rekap Semua Lamaran
                             showRekapLamaranPerusahaan(L_Parent);
+                            CatatRiwayatAdmin("admin", "Melihat rekap semua lamaran");
                             break;
                         }
-                        case 4: { // Cari Mahasiswa (by NIM)
+                        case 10: { // Cari Mahasiswa (by NIM)
                             cin.ignore(numeric_limits<streamsize>::max(), '\n');
                             menuCariMahasiswa(L_Child);
+                            CatatRiwayatAdmin("admin", "Mencari mahasiswa");
                             break;
                         }
-                        case 5: { // Cari Lowongan (by ID)
+                        case 11: { // Cari Lowongan (by ID)
                             menuCariLowongan(L_Parent);
+                            CatatRiwayatAdmin("admin", "Mencari lowongan");
                             break;
                         }
-                        case 6: { // Hapus Mahasiswa (by NIM)
+                        case 12: { // Hapus Mahasiswa (by NIM)
                             string nim_hapus;
                             cin.ignore(numeric_limits<streamsize>::max(), '\n');
                             cout << "Masukkan NIM Mahasiswa yang akan dihapus: ";
                             getline(cin, nim_hapus);
                             deleteChildByNIM(L_Child, L_Parent, nim_hapus);
+                            CatatRiwayatAdmin("admin", "Menghapus mahasiswa NIM: " + nim_hapus);
                             break;
                         }
-                        case 7: { // Hapus Lowongan (by ID)
+                        case 13: { // Hapus Lowongan (by ID)
                             int id_hapus;
                             cout << "Masukkan ID Lowongan yang akan dihapus: ";
                             cin >> id_hapus;
                             deleteParentByID(L_Parent, id_hapus);
+                            CatatRiwayatAdmin("admin", "Menghapus lowongan ID: " + to_string(id_hapus));
                             break;
                         }
-                        case 8: { // Batalkan/Hapus Lamaran
+                        case 14: { // Batalkan/Hapus Lamaran
                             int id_batal;
                             cout << "Masukkan ID Lamaran yang ingin dihapus: ";
                             cin >> id_batal;
                             deleteRelasi(L_Parent, id_batal);
+                            CatatRiwayatAdmin("admin", "Menghapus lamaran ID: " + to_string(id_batal));
                             break;
                         }
-                        case 9: { // Cek Relasi Parent-Child
+                        case 15: { // Cek Relasi Parent-Child
                             int id_low;
                             string nim_cek;
                             cout << "Masukkan ID Lowongan: "; cin >> id_low;
                             cin.ignore(numeric_limits<streamsize>::max(), '\n');
                             cout << "Masukkan NIM Mahasiswa: "; getline(cin, nim_cek);
                             findRelasi(L_Parent, id_low, nim_cek);
+                            CatatRiwayatAdmin("admin", "Cek relasi lowongan ID: " + to_string(id_low) + " - NIM: " + nim_cek);
                             break;
                         }
-                        case 10: { // Lihat Semua Mhs + Lowongan
+                        case 16: { // Lihat Semua Mhs + Lowongan
                             showAllChildWithParent(L_Parent, L_Child);
+                            CatatRiwayatAdmin("admin", "Melihat semua mahasiswa + lowongan");
                             system("pause");
                             break;
                         }
-                        case 11: { // Statistik Lengkap
-                            cout << "\n=== STATISTIK LENGKAP ===" << endl;
-                            cout << "\n[Pelamar per Lowongan]" << endl;
+                        case 17: { // Statistik Lengkap
+                            cout << "\n\033[36m"; // Cyan
+                            cout << "+============================================+" << endl;
+                            cout << "|        \033[33mSTATISTIK LENGKAP SISTEM\033[36m           |" << endl;
+                            cout << "+============================================+\033[0m" << endl;
+                            
+                            // Section 1: Pelamar per Lowongan
+                            cout << "\n\033[36m+--------------------------------------------+\033[0m" << endl;
+                            cout << "| \033[92m[1] PELAMAR PER LOWONGAN\033[0m" << endl;
+                            cout << "\033[36m+--------------------------------------------+\033[0m" << endl;
                             address_parent P = L_Parent.first;
                             while (P != nullptr) {
                                 countChildPerParent(L_Parent, P->info.id_lowongan);
                                 P = P->next;
                             }
-                            cout << "\n[Lowongan per Mahasiswa]" << endl;
+                            
+                            // Section 2: Lowongan per Mahasiswa
+                            cout << "\n\033[36m+--------------------------------------------+\033[0m" << endl;
+                            cout << "| \033[93m[2] LOWONGAN PER MAHASISWA\033[0m" << endl;
+                            cout << "\033[36m+--------------------------------------------+\033[0m" << endl;
                             address_child C = L_Child.first;
                             while (C != nullptr) {
                                 countParentPerChild(L_Parent, C->info.nim);
                                 C = C->next;
                             }
-                            cout << "\n[Mahasiswa Belum Melamar]" << endl;
+                            
+                            // Section 3: Mahasiswa Belum Melamar
+                            cout << "\n\033[36m+--------------------------------------------+\033[0m" << endl;
+                            cout << "| \033[91m[3] MAHASISWA BELUM MELAMAR\033[0m" << endl;
+                            cout << "\033[36m+--------------------------------------------+\033[0m" << endl;
                             countChildWithoutRelasi(L_Parent, L_Child);
-                            cout << "\n[Lowongan Tanpa Pelamar]" << endl;
+                            
+                            // Section 4: Lowongan Tanpa Pelamar
+                            cout << "\n\033[36m+--------------------------------------------+\033[0m" << endl;
+                            cout << "| \033[95m[4] LOWONGAN TANPA PELAMAR\033[0m" << endl;
+                            cout << "\033[36m+--------------------------------------------+\033[0m" << endl;
                             countParentWithoutRelasi(L_Parent);
+                            
+                            cout << "\n\033[36m+============================================+\033[0m" << endl;
+                            CatatRiwayatAdmin("admin", "Melihat statistik lengkap");
                             system("pause");
                             break;
                         }
-                        case 12: { // Edit Relasi
+                        case 18: { // Edit Relasi
                             int id_edit;
                             cout << "Masukkan ID Lamaran yang ingin diedit: ";
                             cin >> id_edit;
                             editRelasi(L_Parent, L_Child, id_edit);
+                            CatatRiwayatAdmin("admin", "Edit relasi lamaran ID: " + to_string(id_edit));
                             break;
                         }
                         default: cout << "Pilihan tidak valid." << endl;
@@ -645,7 +740,7 @@ int main() {
         }
     }
     
-    Cleanup(); // Cleanup at end of main (just in case)
+    Cleanup(); // Cleanup at end of main (jaga-jaga)
 
     return 0;
 }

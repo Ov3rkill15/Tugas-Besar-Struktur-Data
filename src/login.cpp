@@ -101,52 +101,53 @@ void PrintAdminHeader() {
 // Core Functions
 void initUsers() {
     // Data awal pengguna hardcoded
-    struct InitData { string u; string p; string r; };
+    // Format: username, password, role, nim (nim kosong untuk non-mahasiswa)
+    struct InitData { string u; string p; string r; string nim; };
     vector<InitData> data = {
-        {"admin", "admin123", "admin"},
-        {"dosen1", "dosen123", "dosen"},
-        {"techcorp", "123", "perusahaan"},
-        {"nathasyayuanmaharani", "0001", "mahasiswa"},
-        {"theodoreelvisestrada", "0006", "mahasiswa"},
-        {"dyahkusumawardani", "0009", "mahasiswa"},
-        {"azrielraihaneldovahartoto", "0010", "mahasiswa"},
-        {"muhammadilhamalifianda", "0022", "mahasiswa"},
-        {"alyaazizaputeri", "0026", "mahasiswa"},
-        {"ahmadabdansyakuro", "0029", "mahasiswa"},
-        {"fathurrahmanalfarizi", "0035", "mahasiswa"},
-        {"nuswantorosetyomukti", "0040", "mahasiswa"},
-        {"anggitacahyatihidayat", "0041", "mahasiswa"},
-        {"wibnuhijrahfranstio", "0048", "mahasiswa"},
-        {"meyshaprimiandita", "0050", "mahasiswa"},
-        {"muhammadfiqrihabibi", "0056", "mahasiswa"},
-        {"fitriacahyani", "0060", "mahasiswa"},
-        {"triansyahdaniswaraibrahim", "0062", "mahasiswa"},
-        {"rakhaabdillahalkautsar", "0068", "mahasiswa"},
-        {"avicenanaufallathif", "0073", "mahasiswa"},
-        {"naylaassyifa", "0078", "mahasiswa"},
-        {"williampetervanxnajoan", "0084", "mahasiswa"},
-        {"rayvanalifarlomahesworo", "0087", "mahasiswa"},
-        {"zaidansalamrojab", "0088", "mahasiswa"},
-        {"audreyfredileyhanas", "0093", "mahasiswa"},
-        {"muhammadnaelfadly", "0096", "mahasiswa"},
-        {"nairacahayaputridarmawansinaga", "0100", "mahasiswa"},
-        {"muhamadalwansuryadi", "0104", "mahasiswa"},
-        {"dhafyahmadzubaidi", "0107", "mahasiswa"},
-        {"muhammadfarisdhiyaylhaqsarbini", "0117", "mahasiswa"},
-        {"nursyadira", "0123", "mahasiswa"},
-        {"rayfitokrisnawijaya", "0124", "mahasiswa"},
-        {"mochammadrafirisqullah", "0129", "mahasiswa"},
-        {"iputugedeagastyakrisnawidartha", "0134", "mahasiswa"},
-        {"rendil", "0137", "mahasiswa"},
-        {"muhammadariqazzaki", "0138", "mahasiswa"},
-        {"edmundyuliusgantur", "0155", "mahasiswa"},
-        {"muhammadsayyidhuwaidi", "0157", "mahasiswa"},
-        {"muhdzuljalalwaliikramjalil", "0160", "mahasiswa"},
-        {"ramadhantangguhdefennder", "0003", "mahasiswa"},
-        {"adzkiyaputrirahmawan", "0025", "mahasiswa"},
-        {"fathimahradhiyya", "0029", "mahasiswa"},
-        {"rakanghazianadiwjaya", "0034", "mahasiswa"},
-        {"jihannabilamubarakah", "0037", "mahasiswa"}
+        {"admin", "admin123", "admin", ""},
+        {"dosen1", "dosen123", "dosen", ""},
+        {"techcorp", "123", "perusahaan", ""},
+        {"nathasyayuanmaharani", "0001", "mahasiswa", "103032400001"},
+        {"theodoreelvisestrada", "0006", "mahasiswa", "103032400006"},
+        {"dyahkusumawardani", "0009", "mahasiswa", "103032400009"},
+        {"azrielraihaneldovahartoto", "0010", "mahasiswa", "103032400010"},
+        {"muhammadilhamalifianda", "0022", "mahasiswa", "103032400022"},
+        {"alyaazizaputeri", "0026", "mahasiswa", "103032400026"},
+        {"ahmadabdansyakuro", "0029", "mahasiswa", "103032400029"},
+        {"fathurrahmanalfarizi", "0035", "mahasiswa", "103032400035"},
+        {"nuswantorosetyomukti", "0040", "mahasiswa", "103032400040"},
+        {"anggitacahyatihidayat", "0041", "mahasiswa", "103032400041"},
+        {"wibnuhijrahfranstio", "0048", "mahasiswa", "103032400048"},
+        {"meyshaprimiandita", "0050", "mahasiswa", "103032400050"},
+        {"muhammadfiqrihabibi", "0056", "mahasiswa", "103032400056"},
+        {"fitriacahyani", "0060", "mahasiswa", "103032400060"},
+        {"triansyahdaniswaraibrahim", "0062", "mahasiswa", "103032400062"},
+        {"rakhaabdillahalkautsar", "0068", "mahasiswa", "103032400068"},
+        {"avicenanaufallathif", "0073", "mahasiswa", "103032400073"},
+        {"naylaassyifa", "0078", "mahasiswa", "103032400078"},
+        {"williampetervanxnajoan", "0084", "mahasiswa", "103032400084"},
+        {"rayvanalifarlomahesworo", "0087", "mahasiswa", "103032400087"},
+        {"zaidansalamrojab", "0088", "mahasiswa", "103032400088"},
+        {"audreyfredileyhanas", "0093", "mahasiswa", "103032400093"},
+        {"muhammadnaelfadly", "0096", "mahasiswa", "103032400096"},
+        {"nairacahayaputridarmawansinaga", "0100", "mahasiswa", "103032400100"},
+        {"muhamadalwansuryadi", "0104", "mahasiswa", "103032400104"},
+        {"dhafyahmadzubaidi", "0107", "mahasiswa", "103032400107"},
+        {"muhammadfarisdhiyaylhaqsarbini", "0117", "mahasiswa", "103032400117"},
+        {"nursyadira", "0123", "mahasiswa", "103032400123"},
+        {"rayfitokrisnawijaya", "0124", "mahasiswa", "103032400124"},
+        {"mochammadrafirisqullah", "0129", "mahasiswa", "103032400129"},
+        {"iputugedeagastyakrisnawidartha", "0134", "mahasiswa", "103032400134"},
+        {"rendil", "0137", "mahasiswa", "103032400137"},
+        {"muhammadariqazzaki", "0138", "mahasiswa", "103032400138"},
+        {"edmundyuliusgantur", "0155", "mahasiswa", "103032400155"},
+        {"muhammadsayyidhuwaidi", "0157", "mahasiswa", "103032400157"},
+        {"muhdzuljalalwaliikramjalil", "0160", "mahasiswa", "103032400160"},
+        {"ramadhantangguhdefennder", "0003", "mahasiswa", "103032430003"},
+        {"adzkiyaputrirahmawan", "0025", "mahasiswa", "103032430025"},
+        {"fathimahradhiyya", "0029", "mahasiswa", "103032430029"},
+        {"rakanghazianadiwjaya", "0034", "mahasiswa", "103032430034"},
+        {"jihannabilamubarakah", "0037", "mahasiswa", "103032430037"}
     };
 
     jumlahPengguna = 0;
@@ -155,9 +156,20 @@ void initUsers() {
             users[jumlahPengguna].username = d.u;
             users[jumlahPengguna].password = d.p;
             users[jumlahPengguna].role = d.r;
+            users[jumlahPengguna].nim = d.nim;
             jumlahPengguna++;
         }
     }
+}
+
+// Fungsi untuk mendapatkan NIM berdasarkan username
+string getNIMByUsername(string username) {
+    for (int i = 0; i < jumlahPengguna; i++) {
+        if (users[i].username == username) {
+            return users[i].nim;
+        }
+    }
+    return "";
 }
 
 bool AuthenticateUser(string username, string password) {
@@ -178,7 +190,7 @@ bool isUsernameExists(string username) {
     return false;
 }
 
-bool Login(string &activeUser, string &activeRole) {
+bool Login(string &activeUser, string &activeRole, string &activeNIM) {
     string pilihan;
     bool running = true;
 
@@ -212,16 +224,20 @@ bool Login(string &activeUser, string &activeRole) {
                 if (AuthenticateUser(u, p)) {
                     activeUser = u;
                     
-                    // Find role
+                    // Find role dan NIM
                     for(int i=0; i<jumlahPengguna; i++) {
                         if(users[i].username == u) {
                             activeRole = users[i].role;
+                            activeNIM = users[i].nim;  // Ambil NIM dari data user
                             break;
                         }
                     }
 
                     ClearScreen();
                     cout << "Login berhasil! Role: " << activeRole << endl;
+                    if (!activeNIM.empty()) {
+                        cout << "NIM Anda: " << activeNIM << endl;
+                    }
                     cout << "Menuju Aplikasi..." << endl;
                     Loading(1200);
 
@@ -242,10 +258,17 @@ bool Login(string &activeUser, string &activeRole) {
                 continue;
             }
 
-            string u, kota, p1, p2;
+            string u, kota, nim, p1, p2;
             cout << "Masukkan Username: "; getline(cin, u);
             if (isUsernameExists(u)) {
                 cout << "Username sudah digunakan." << endl;
+                Loading(1500);
+                continue;
+            }
+
+            cout << "Masukkan NIM (12 digit): "; getline(cin, nim);
+            if (nim.length() != 12) {
+                cout << "NIM harus 12 digit." << endl;
                 Loading(1500);
                 continue;
             }
@@ -262,9 +285,12 @@ bool Login(string &activeUser, string &activeRole) {
                 if (p1 == p2) {
                     users[jumlahPengguna].username = u;
                     users[jumlahPengguna].password = p1;
-                    users[jumlahPengguna].role = "mahasiswa"; // Default role
+                    users[jumlahPengguna].role = "mahasiswa"; // Default role untuk pendaftaran publik
+                    users[jumlahPengguna].nim = nim;
                     jumlahPengguna++;
                     cout << "Signup berhasil! Silakan login." << endl;
+                    cout << "  Username: " << u << endl;
+                    cout << "  NIM: " << nim << endl;
                     success = true;
                     Loading(1500);
                     break;
@@ -335,14 +361,32 @@ void MainAdmin(string adminUsername, bool &logout) {
 
 void CetakPengguna() {
     ClearScreen();
-    cout << "\n--- Daftar Pengguna ---" << endl;
-    if (jumlahPengguna == 0) cout << "Tidak ada pengguna." << endl;
-    else {
+    cout << "\n\033[36m+============================================+\033[0m" << endl;
+    cout << "|         \033[33mDAFTAR PENGGUNA SISTEM\033[0m           |" << endl;
+    cout << "\033[36m+============================================+\033[0m" << endl;
+    
+    if (jumlahPengguna == 0) {
+        cout << "| \033[91mTidak ada pengguna.\033[0m" << endl;
+    } else {
         for (int i = 0; i < jumlahPengguna; i++) {
-            cout << (i + 1) << ". Username: " << users[i].username << endl;
+            string roleColor = "\033[97m";
+            if (users[i].role == "admin") roleColor = "\033[91m";
+            else if (users[i].role == "dosen") roleColor = "\033[93m";
+            else if (users[i].role == "perusahaan") roleColor = "\033[95m";
+            else if (users[i].role == "mahasiswa") roleColor = "\033[92m";
+            
+            cout << "| \033[36m[" << (i + 1) << "]\033[0m " << users[i].username;
+            cout << " - " << roleColor << users[i].role << "\033[0m";
+            if (!users[i].nim.empty()) {
+                cout << " (NIM: " << users[i].nim << ")";
+            }
+            cout << endl;
         }
     }
-    cout << "\nTekan Enter untuk kembali...";
+    cout << "\033[36m+============================================+\033[0m" << endl;
+    cout << "| Total: \033[92m" << jumlahPengguna << "\033[0m pengguna" << endl;
+    cout << "\033[36m+============================================+\033[0m" << endl;
+    cout << "\n\033[33mTekan Enter untuk kembali...\033[0m";
     cin.get();
 }
 
@@ -356,7 +400,9 @@ void KelolaPengguna(string adminUsername) {
         cout << "1. Tambah Pengguna Baru" << endl;
         cout << "2. Hapus Pengguna" << endl;
         cout << "3. Ubah Data Pengguna" << endl;
+        cout << "\033[31m"; // Red
         cout << "0. Kembali ke Menu Admin" << endl;
+        cout << "\033[0m";
         cout << "Masukkan pilihan: ";
         string p; getline(cin, p);
 
@@ -364,6 +410,10 @@ void KelolaPengguna(string adminUsername) {
         else if (p == "2") HapusPengguna(adminUsername);
         else if (p == "3") UbahDataPengguna(adminUsername);
         else if (p == "0") managing = false;
+        else {
+            cout << "Pilihan tidak valid." << endl;
+            Loading(1000);
+        }
     }
 }
 
@@ -377,13 +427,41 @@ bool TambahPenggunaBaru(string adminUsername) {
     }
     cout << "Masukkan Password: ";
     string p = ReadPassword();
+    
+    cout << "Pilih Role (admin/dosen/perusahaan/mahasiswa): ";
+    string r; getline(cin, r);
+    
+    // Validasi role
+    if (r != "admin" && r != "dosen" && r != "perusahaan" && r != "mahasiswa") {
+        cout << "Role tidak valid. Harus: admin/dosen/perusahaan/mahasiswa" << endl;
+        Loading(1000);
+        return false;
+    }
+    
+    string nim = "";
+    if (r == "mahasiswa") {
+        cout << "Masukkan NIM (12 digit): ";
+        getline(cin, nim);
+        if (nim.length() != 12) {
+            cout << "NIM harus 12 digit." << endl;
+            Loading(1000);
+            return false;
+        }
+    }
 
     if (jumlahPengguna < NMAX_USER) {
         users[jumlahPengguna].username = u;
         users[jumlahPengguna].password = p;
+        users[jumlahPengguna].role = r;
+        users[jumlahPengguna].nim = nim;
         jumlahPengguna++;
         cout << "Pengguna berhasil ditambahkan." << endl;
-        CatatRiwayatAdmin(adminUsername, "Menambahkan pengguna: " + u);
+        if (r == "mahasiswa") {
+            cout << "  Username: " << u << endl;
+            cout << "  Role: " << r << endl;
+            cout << "  NIM: " << nim << endl;
+        }
+        CatatRiwayatAdmin(adminUsername, "Menambahkan pengguna: " + u + " (role: " + r + ")");
         Loading(1000);
         return true;
     }
@@ -533,14 +611,23 @@ void CatatRiwayatAdmin(string adminUsername, string aktivitas) {
 
 void LihatRiwayatAdmin() {
     ClearScreen();
-    cout << "\n--- Riwayat Aktivitas Admin ---" << endl;
-    if (jumlahRiwayat == 0) cout << "Kosong." << endl;
-    else {
+    cout << "\n\033[36m+============================================+\033[0m" << endl;
+    cout << "|       \033[33mRIWAYAT AKTIVITAS ADMIN\033[0m            |" << endl;
+    cout << "\033[36m+============================================+\033[0m" << endl;
+    
+    if (jumlahRiwayat == 0) {
+        cout << "| \033[91mBelum ada aktivitas tercatat.\033[0m" << endl;
+    } else {
         for (int i = 0; i < jumlahRiwayat; i++) {
-            cout << (i+1) << ". [" << adminRiwayat[i].timestamp << "] "
-                 << adminRiwayat[i].oleh_admin << " - " << adminRiwayat[i].aktivitas << endl;
+            cout << "\033[36m+--------------------------------------------+\033[0m" << endl;
+            cout << "| \033[92m[" << (i+1) << "]\033[0m " << adminRiwayat[i].aktivitas << endl;
+            cout << "|     \033[90mOleh: " << adminRiwayat[i].oleh_admin << "\033[0m" << endl;
+            cout << "|     \033[90mWaktu: " << adminRiwayat[i].timestamp << "\033[0m" << endl;
         }
     }
-    cout << "\nTekan Enter kembali...";
+    cout << "\033[36m+============================================+\033[0m" << endl;
+    cout << "| Total: \033[92m" << jumlahRiwayat << "\033[0m aktivitas tercatat" << endl;
+    cout << "\033[36m+============================================+\033[0m" << endl;
+    cout << "\n\033[33mTekan Enter kembali...\033[0m";
     cin.get();
 }

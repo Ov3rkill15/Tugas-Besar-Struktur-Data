@@ -1,10 +1,6 @@
 #include "mahasiswa.h"
 #include <cstring>
-
 using namespace std;
-
-// Implementasi fungsi dasar List Child (Mahasiswa)
-
 void createListChild(ListChild &L) {
     L.first = nullptr;
 }
@@ -20,7 +16,6 @@ address_child alokasiChild(string NIM, string Nama, int Angkatan) {
     return C;
 }
 
-// Fungsi (b) Insert element child
 void insertChild(ListChild &L, address_child C_Baru) {
     if (L.first == nullptr) L.first = C_Baru;
     else {
@@ -42,44 +37,58 @@ address_child findChildByNIM(ListChild L, string NIM_Target) {
 void menuCariMahasiswa(ListChild L) {
     string nim_cari;
 
-    cout << "\n--- CARI MAHASISWA BERDASARKAN NIM ---" << endl;
-    cout << "Masukkan NIM Mahasiswa yang dicari: ";
+    cout << "\n\033[36m+============================================+\033[0m" << endl;
+    cout << "|     \033[33mCARI MAHASISWA BERDASARKAN NIM\033[0m        |" << endl;
+    cout << "\033[36m+============================================+\033[0m" << endl;
+    cout << "| Masukkan NIM: ";
 
-    // Penanganan input string (NIM)
-    // NOTE: Ini akan dipanggil setelah input integer di main, jadi perlu cin.ignore di main
     getline(cin, nim_cari);
 
     address_child C_Found = findChildByNIM(L, nim_cari);
 
     if (C_Found != nullptr) {
-        cout << "   Ditemukan!" << endl;
-        cout << "   NIM: " << C_Found->info.nim
-             << " | Nama: " << C_Found->info.nama
-             << " | Angkatan: " << C_Found->info.angkatan << endl;
+        cout << "\033[32m| [DITEMUKAN]\033[0m" << endl;
+        cout << "\033[36m+--------------------------------------------+\033[0m" << endl;
+        cout << "| NIM      : \033[97m" << C_Found->info.nim << "\033[0m" << endl;
+        cout << "| Nama     : \033[92m" << C_Found->info.nama << "\033[0m" << endl;
+        cout << "| Angkatan : \033[93m" << C_Found->info.angkatan << "\033[0m" << endl;
+        cout << "\033[36m+============================================+\033[0m" << endl;
     } else {
-        cout << "   Mahasiswa dengan NIM " << nim_cari << " TIDAK Ditemukan." << endl;
+        cout << "\033[91m| [TIDAK DITEMUKAN] NIM " << nim_cari << "\033[0m" << endl;
+        cout << "\033[36m+============================================+\033[0m" << endl;
     }
 }
-
-
-// Tambahkan di mahasiswa.cpp, di bawah handleInputMahasiswa:
 
 void showMahasiswa(ListChild L_Child) {
     address_child C = L_Child.first;
-    cout << "\n--- DAFTAR MAHASISWA (CHILD LIST) ---" << endl;
-    if (C == nullptr) { cout << "List Mahasiswa kosong." << endl; return; }
+    int count = 0;
+    
+    cout << "\n\033[36m+============================================+\033[0m" << endl;
+    cout << "|        \033[33mDAFTAR MAHASISWA TERDAFTAR\033[0m         |" << endl;
+    cout << "\033[36m+============================================+\033[0m" << endl;
+    
+    if (C == nullptr) { 
+        cout << "| \033[91mBelum ada mahasiswa terdaftar.\033[0m" << endl;
+        cout << "\033[36m+============================================+\033[0m" << endl;
+        return; 
+    }
+    
     while (C != nullptr) {
-        cout << " - NIM: " << C->info.nim << " | Nama: " << C->info.nama << " | Angkatan: " << C->info.angkatan << endl;
+        count++;
+        cout << "\033[36m+--------------------------------------------+\033[0m" << endl;
+        cout << "| \033[92m" << C->info.nama << "\033[0m" << endl;
+        cout << "|   NIM: \033[97m" << C->info.nim << "\033[0m | Angkatan: \033[93m" << C->info.angkatan << "\033[0m" << endl;
         C = C->next;
     }
+    cout << "\033[36m+============================================+\033[0m" << endl;
+    cout << "| Total: \033[92m" << count << "\033[0m mahasiswa terdaftar" << endl;
+    cout << "\033[36m+============================================+\033[0m" << endl;
 }
 
-// Fungsi utama untuk input dinamis
 void handleInputMahasiswa(ListChild &L_Child, string NIM, string Nama) {
     address_child C_Target = findChildByNIM(L_Child, NIM);
 
     if (C_Target == nullptr) {
-        // Angkatan diset 0 (default)
         address_child C_Baru = alokasiChild(NIM, Nama, 0);
         insertChild(L_Child, C_Baru);
         cout << "   [INFO] Data Mahasiswa '" << Nama << "' ditambahkan ke List Child." << endl;
@@ -93,28 +102,23 @@ void cleanupRelasiBeforeChildDeletion(ListParent &L_Parent, string NIM_Target) {
         address_relasi R_Before = nullptr;
         address_relasi R_Current = P->first_relasi;
 
-        // Traverse the Relasi sub-list of the current Parent (P)
         while (R_Current != nullptr) {
             bool is_deleted = false;
 
-            // Cek apakah Node Relasi ini menunjuk ke Mahasiswa yang akan dihapus
             if (R_Current->ptr_child->info.nim == NIM_Target) {
                 is_deleted = true;
 
                 if (R_Current == P->first_relasi) {
-                    // Kasus 1: Node Relasi Pertama
                     P->first_relasi = R_Current->next;
                     delete R_Current;
                     R_Current = P->first_relasi;
                 } else {
-                    // Kasus 2: Node Tengah/Akhir
                     R_Before->next = R_Current->next;
                     delete R_Current;
                     R_Current = R_Before->next;
                 }
             }
 
-            // Pindah ke node berikutnya HANYA jika node saat ini TIDAK dihapus
             if (!is_deleted) {
                 R_Before = R_Current;
                 R_Current = R_Current->next;
@@ -126,10 +130,8 @@ void cleanupRelasiBeforeChildDeletion(ListParent &L_Parent, string NIM_Target) {
 
 
 void deleteChildByNIM(ListChild &L_Child, ListParent &L_Parent, string NIM_Target) {
-    // 1. CLEANUP: Hapus semua Node Relasi yang terikat (GLOBAL TRAVERSAL)
     cleanupRelasiBeforeChildDeletion(L_Parent, NIM_Target);
 
-    // 2. CARI C_TARGET dan C_BEFORE di List Child
     address_child C_Before = nullptr;
     address_child C_Target = L_Child.first;
     bool target_found = false;
@@ -143,24 +145,19 @@ void deleteChildByNIM(ListChild &L_Child, ListParent &L_Parent, string NIM_Targe
         }
     }
 
-    // A. Kasus 1: Mahasiswa tidak ditemukan
     if (!target_found) {
         cout << " Gagal menghapus. Mahasiswa dengan NIM " << NIM_Target << " tidak ditemukan." << endl;
         return;
     }
 
-    // 3. HAPUS NODE CHILD (C_Target)
     if (C_Target == L_Child.first) {
-        // Menghapus Node Pertama
         L_Child.first = C_Target->next;
     } else {
-        // Menghapus Node Tengah/Akhir
         if (C_Before != nullptr) {
             C_Before->next = C_Target->next;
         }
     }
 
-    // 4. Dealokasi Node Child
     cout << " Mahasiswa dengan NIM " << NIM_Target
          << " berhasil dihapus beserta semua Lamaran terkait." << endl;
     delete C_Target;
