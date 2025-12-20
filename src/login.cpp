@@ -101,7 +101,6 @@ void PrintAdminHeader() {
 // Core Functions
 void initUsers() {
     // Data awal pengguna hardcoded
-    // Format: username, password, role, nim (nim kosong untuk non-mahasiswa)
     struct InitData { string u; string p; string r; string nim; };
     vector<InitData> data = {
         {"admin", "admin123", "admin", ""},
