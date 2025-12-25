@@ -20,7 +20,7 @@ int hitungSkorATS(string filePath) {
     string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
     file.close();
 
-    for (const string& keyword : keywords) {
+    for (const string &keyword : keywords) {
         if (content.find(keyword) != string::npos) {
             score += 10;
         }

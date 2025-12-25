@@ -33,15 +33,15 @@ string OpenFileDialog() {
     char szFile[260];
     ZeroMemory(&ofn, sizeof(ofn));
     ofn.lStructSize = sizeof(ofn);
-    ofn.hwndOwner = NULL;
+    ofn.hwndOwner = nullptr;
     ofn.lpstrFile = szFile;
     ofn.lpstrFile[0] = '\0';
     ofn.nMaxFile = sizeof(szFile);
     ofn.lpstrFilter = "PDF Files\0*.pdf\0Text Files\0*.txt\0All Files\0*.*\0";
     ofn.nFilterIndex = 1;
-    ofn.lpstrFileTitle = NULL;
+    ofn.lpstrFileTitle = nullptr;
     ofn.nMaxFileTitle = 0;
-    ofn.lpstrInitialDir = NULL;
+    ofn.lpstrInitialDir = nullptr;
     ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
     if (GetOpenFileName(&ofn) == TRUE) {

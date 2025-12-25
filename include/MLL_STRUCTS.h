@@ -5,9 +5,9 @@
 #include <string>
 
 using namespace std;
-typedef struct NodeRelasi* address_relasi;
-typedef struct NodeParent* address_parent;
-typedef struct NodeChild* address_child;
+typedef struct NodeRelasi *address_relasi;
+typedef struct NodeParent *address_parent;
+typedef struct NodeChild *address_child;
 struct InfoLowongan {
     int id_lowongan;
     string posisi;
